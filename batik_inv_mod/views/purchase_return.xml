@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vendor_return_tree_view" model="ir.ui.view">
+        <field name="name">vendor.return.view.tree</field>
+        <field name="model">vendor.return</field>
+        <field name="arch" type="xml">
+            <tree string="Vendor Return">
+                <field name="name"/>
+                <field name="vendor_id" />
+                <field name="warehouse_id"/>
+                <field name="return_type"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vendor_return_form_view" model="ir.ui.view">
+        <field name="name">vendor.return.form.view</field>
+        <field name="model">vendor.return</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm Return" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_validate" type="object" string="Validate Return" class="btn-primary" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>       
+                <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="not (state in ['confirmed','done'])">
+                        <button name="action_account_move_return_tree" 
+                            class="oe_stat_button" 
+                            icon="fa-pencil-square-o" type="object" help="List view of return operations" invisible="return_type != 'refund'">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Refund</span>
+                            </div>
+                        </button>
+                        <button name="action_picking_move_return_tree" 
+                            class="oe_stat_button" 
+                            icon="fa-arrows-v" type="object" help="List view of operations">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Stock Move</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" readonly="1" force_save="1" class="oe_inline"/>
+                            </h1>
+                    </div>
+                    <group>
+                        <field name="vendor_id"/>
+                        <field name="return_type"/>
+                        <field name="warehouse_id"/>
+                        <field name="location_id"/>
+                        <field name="purchase_domain" invisible="1"/>
+                        <field name="purchase_order_ids" widget="many2many_tags" invisible="return_type != 'return'" required="return_type == 'return'" domain="purchase_domain"/>
+                    </group>
+                    <notebook>
+                        <page string="Products to Return">
+                            <field name="return_line_ids" force_save="1">
+                                <tree editable="bottom">
+                                    <field name="product_code"/>
+                                    <field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="purchase_id" force_save="1"/>
+                                    <field name="purchase_domain" column_invisible="True"/>
+                                    <field name="cost_price" readonly="1"/>
+                                    <field name="warehouse_qty" readonly="1"/>
+                                    <field name="return_qty"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vendor_return_action" model="ir.actions.act_window">
+        <field name="name">Vendor Returns</field>
+        <field name="res_model">vendor.return</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,81 @@
+html, body, #wrapwrap{
+    overflow: visible !important;
+}
+.page {
+    padding: 40px;
+    width: 1400px;
+    margin: auto;
+    color:#000000;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: -130px;
+    padding: 0;
+}
+.board {
+    background-color: #000000;
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+.logoImg img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+table {
+    width: 100%;
+    color: white;
+    font-size: 14px;
+    margin-top: 10px;
+}
+th, td {
+    padding: 6px;
+    text-align: left;
+}
+th{
+    border-bottom: 1px solid #cfb313;
+}
+.location-box {
+    background: #1e1e1e;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(207,179,19,0.3);
+}
+.realtime-clock {
+    text-align: center;
+    font-size: 24px;
+    color: #cfb313;
+    margin-bottom: 40px;
+}
+
+.o_stock_realtime_page {
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+@media screen and (max-width: 992px) {
+    .location-item {
+        flex: 1 1 100%;
+    }
+}
+@media screen and (max-width: 576px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .realtime-clock {
+        font-size: 16px;
+    }
+    .filter {
+        text-align: center !important;
+    }
+    table {
+        font-size: 12px;
+    }
+
+    .o_stock_realtime_page {
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+}

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_qc_report_breadcrumbs" inherit_id="portal.portal_breadcrumbs" priority="22">
+        <xpath expr="//ol[contains(@class, 'o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'qc_report'" class="breadcrumb-item">
+                <a href="/my/qc_report">QC Report</a>
+            </li>
+            <li t-if="page_name == 'purchase_order_from_qc'" class="breadcrumb-item">
+                <a href="/my/qc_report">QC Report</a>
+            </li>
+            <li t-if="page_name == 'purchase_order_from_qc'" class="breadcrumb-item">
+                <a href="/my/purchase">Purchase Orders</a>
+            </li>
+            <li t-if="page_name == 'purchase_order_from_qc'" class="breadcrumb-item active">
+                <t t-esc="purchase_order_name"/>
+            </li>
+            <li t-if="page_name == 'purchase_order'" class="breadcrumb-item">
+                <a href="/my/purchase">Purchase Orders</a>
+            </li>
+            <li t-if="page_name == 'purchase_order'" class="breadcrumb-item active">
+                <t t-esc="purchase_order_name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_qc_report" name="Portal QC Report">
+        <t t-call="portal.portal_layout">
+            <div class="container py-4">
+                <h2 class="mb-4">
+                    <i class="bi bi-clipboard-check text-info me-2"/> QC Report
+                </h2>
+
+                <div class="card shadow-sm rounded mb-4">
+                    <div class="card-body">
+                        <form method="get" t-att-action="request.httprequest.path">
+                            <div class="row g-3 align-items-end">
+                                <!-- From Date -->
+                                <div class="col-md-3">
+                                    <label class="form-label">From Date</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar-event"/></span>
+                                        <input type="date" name="date_from" class="form-control"
+                                            t-att-value="request.params.get('date_from','')"/>
+                                    </div>
+                                </div>
+
+                                <!-- To Date -->
+                                <div class="col-md-3">
+                                    <label class="form-label">To Date</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar-check"/></span>
+                                        <input type="date" name="date_to" class="form-control"
+                                            t-att-value="request.params.get('date_to','')"/>
+                                    </div>
+                                </div>
+
+                                <!-- Search -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Search RN/Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-search"/></span>
+                                        <input type="text" name="search" class="form-control"
+                                            t-att-value="request.params.get('search','')"/>
+                                    </div>
+                                </div>
+
+                                <!-- Group By -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Group By</label>
+                                    <select name="groupby" class="form-select">
+                                        <option value="">No Group</option>
+                                        <option value="bulan" t-att-selected="request.params.get('groupby') == 'bulan'">Group by Bulan</option>
+                                        <option value="tanggal" t-att-selected="request.params.get('groupby') == 'tanggal'">Group by Tanggal</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="row mt-3">
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary w-100" type="submit">
+                                        <i class="bi bi-funnel me-1"/> Filter
+                                    </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <a href="/my/qc_report" class="btn btn-outline-secondary w-100">
+                                        <i class="bi bi-x-circle me-1"/> Clear All
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- TABLE QC REPORT -->
+                <div class="card shadow rounded">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>PO Number</th>
+                                        <th>Date</th>
+                                        <th>Qty Demand</th>
+                                        <th>Qty Pass</th>
+                                        <th>Qty Failed</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="not grouped_lines or not (grouped_lines.values() and list(grouped_lines.values())[0])">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                <i class="fa fa-folder-open fa-2x mb-2"/><br/>
+                                                No QC Data.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="groupby">
+                                        <t t-foreach="grouped_lines.items()" t-as="group">
+                                            <tr>
+                                                <td colspan="6" class="bg-info text-white font-weight-bold border-0">
+                                                    <i class="fa fa-calendar-alt mr-1"/>
+                                                    <t t-esc="group[0]"/>
+                                                </td>
+                                            </tr>
+                                            <t t-foreach="group[1]" t-as="line">
+                                                <tr>
+                                                    <td><t t-esc="line['no']"/></td>
+                                                    <td>
+                                                        <a t-attf-href="/my/purchase/{{ line['purchase_id'] }}?from_qc=1">
+                                                            <t t-esc="line['rn']"/>
+                                                        </a>
+                                                    </td>
+                                                    <td><t t-esc="line['date']"/></td>
+                                                    <td><t t-esc="line['qty_demand']"/></td>
+                                                    <td><t t-esc="line['qty_pass']"/></td>
+                                                    <td><t t-esc="line['qty_failed']"/></td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-foreach="grouped_lines['all']" t-as="line">
+                                            <tr>
+                                                <td><t t-esc="line['no']"/></td>
+                                                <td>
+                                                    <a t-attf-href="/my/purchase/{{ line['purchase_id'] }}?from_qc=1">
+                                                        <t t-esc="line['rn']"/>
+                                                    </a>
+                                                </td>
+                                                <td><t t-esc="line['date']"/></td>
+                                                <td><t t-esc="line['qty_demand']"/></td>
+                                                <td><t t-esc="line['qty_pass']"/></td>
+                                                <td><t t-esc="line['qty_failed']"/></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>
+                .portal_qc_report .input-group-text { background: #eef2f7; }
+                .portal_qc_report .card { border-radius: 16px !important; }
+                .portal_qc_report table th, .portal_qc_report table td { vertical-align: middle !important; }
+                .portal_qc_report thead { font-size: 15px; }
+            </style>
+        </t>
+    </template>
+
+</odoo>

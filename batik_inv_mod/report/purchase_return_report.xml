@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="report_vendor_return_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <table style="width:100%; margin-bottom:10px;border-collapse: collapse; background-color:black;">
+                            <tr style="">
+                                <td style="text-align:left;color:white; width:50%;border-top:0px !important;">
+                                    <div style="font-size:13px;">
+                                        <span t-esc="company_id._get_street(o.warehouse_id.partner_id)"/><br/>
+                                        <span t-esc="company_id._get_address_details(o.warehouse_id.partner_id)"/><br/>
+                                    </div>
+                                </td>
+                                
+                                <td style="vertical-align:top; text-align:left; width:50%;">
+                                    <table style=" width:100%; font-size:13px; background-color:black;">
+                                        <tr>
+                                            <td style="padding:2px 0;color:white;border:1px solid black;">
+                                                <span>Date:</span>
+                                                <span t-esc="o.create_date.strftime('%d-%m-%Y')"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:2px 0;color:white;border:1px solid black;">
+                                                <span>Salesperson:</span>
+                                                <span t-esc="o.create_uid.name"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <br/><br/>
+                        <div style="text-align:left; margin-bottom:20px;">
+                            <h1 style="margin:0; color:black;">Return Return # <t t-esc="o.name"/></h1>
+                        </div>
+                        <br/>
+                        <table class="table table-sm table-bordered mt16 mb16"
+                            style="width:100%;
+                                border-collapse:collapse;
+                                border: 1px solid black;">
+                            <thead>
+                                <tr style="background-color:black; color:#d3d3d3;">   
+                                    <th style="text-align:left; padding:8px;">Product Code</th>
+                                    <th style="text-align:left; padding:8px;">Description</th>
+                                    <th style="text-align:left; padding:8px;">Origin</th>
+                                    <th style="text-align:left; padding:8px;">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.return_line_ids" t-as="line">
+                                    <tr>
+                                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.product_code"/>
+                                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.product_id.display_name"/>
+                                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.purchase_id.name or '-'"/>
+                                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.return_qty"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+     <record id="action_purchase_return_report" model="ir.actions.report">
+        <field name="name">Purchase Return Report</field>
+        <field name="model">vendor.return</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batik_inv_mod.report_vendor_return_document</field>
+        <field name="report_file">batik_inv_mod.report_vendor_return_document</field>
+        <field name="print_report_name">'Vendor Return - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_vendor_return"/>
+        <field name="binding_type">report</field>
+    </record> 
+
+</odoo>

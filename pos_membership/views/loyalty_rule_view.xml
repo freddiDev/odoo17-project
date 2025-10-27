@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="inherit_loyalty_rule_view_form_batik" model="ir.ui.view">
+        <field name="name">inherit.loyalty.rule.view.form.batik</field>
+        <field name="model">loyalty.rule</field>
+        <field name="inherit_id" ref="loyalty.loyalty_rule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="replace">
+                <form class="loyalty-rule-form">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <separator string="Conditions" colspan="2"/>
+                                <field name="member_type_ids" widget="many2many_tags" class="form-control"/>
+                            </group>
+                            <group>
+                                <separator string="" colspan="2"/>
+                                <field name="reward_point_amount" class="form-control" string="Points"/>
+                                <label for="minimum_amount" string="Min Amount"/>
+                                <div class="d-flex flex-row">
+                                    <field name="minimum_amount" class="oe_inline form-control me-1"/>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="batik_general_mod.template_exclusive_main" name="MainLayoutTemplate">
+        <t t-set="unique_cvs" t-value="o.order_line.mapped('cv_id')"/>
+        <t t-foreach="unique_cvs" t-as="cv">
+            <t t-call="batik_general_mod.template_exclusive_external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <div width="100%">
+                        <div style="background:#fff; line-height:20px;" width="100%">
+                            <div style="background-color:#f2f2f2;overflow:visible;">
+                                <div align="left" style="float:left;padding:15px; width:40%; line-height:18px;" valign="top">
+                                    <div>
+                                        <span t-field="o.partner_id.name" style="font-weight:bold;font-size:16px"/><br/><br/> 
+                                        <div>
+                                            <span t-field="o.partner_id.street"/> - <span t-field="o.partner_id.city"/><br/>
+                                            <strong>Mobile : </strong> <span t-field="o.partner_id.mobile"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div align="right" style="width:60%;float:right" valign="top">
+                                    <table t-attf-style="text-transform:capitalize; background-color: #000000; color: #ffffff};">
+                                        <tr>
+                                            <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                                <span t-if="o.state == 'draft'">RFQ :</span>
+                                                <span t-if="o.state == 'purchase'">PO :</span>
+                                            </td>
+                                            <td t-attf-style="text-align:right; font-weight:bold; padding:9px 15px;">
+                                                <span t-field="o.name" t-if="o.state in ['draft','purchase']"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                                <span>Date :</span>
+                                            </td>
+                                            <td t-attf-style="text-align:right; font-weight:bold; padding:9px 15px;">
+                                                <span t-field="o.date_order"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                                <span>Document :</span>
+                                            </td>
+                                            <td t-attf-style="text-align:right; font-weight:bold; padding:9px 15px;">
+                                                <span t-field="o.purchase_remarks"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div float='left' style="margin-top:20px;">
+                                <span style="font-size:14px;font-height:75px;font-weight: bold;">Destination: <span t-field="cv.name"/></span>
+                            </div>
+                            <div>
+                                <p t-attf-style="border-bottom:1px solid; padding:0px;margin-top:25px !important;"/>
+                            </div>
+                            <div>
+                                <table BORDERCOLOR="#000000" border="1" cellpadding="0" cellspacing="0" class="table table-bordered" style="border:0.5px solid #ccc; border-collapse: collapse; text-transform:capitalize; padding:15px;border-bottom:1px solid #ccc;" width="100%">
+                                    <thead>
+                                        <tr t-attf-style="page-break-inside: avoid !important;background-color: #000000; color:#000000;">
+                                            <td align="center" t-attf-style="padding:5px 10px; color: #ffffff; border:1px solid #000000 !important; border-right:0px solid #000000 !important; font-weight:bold;" width="8%">No</td>
+                                            <td align="left" t-attf-style="padding:5px 10px; color: #ffffff; border:1px solid #000000 !important; border-right:0px solid #000000 !important; font-weight:bold;" width="52%">Product</td>
+                                            <td align="left" t-attf-style="padding:5px 10px; color: #ffffff; border:1px solid #000000 !important; border-right:0px solid #000000 !important; font-weight:bold;" width="15%">Motif</td>
+                                            <td align="right" t-attf-style="padding:5px 10px; color: #ffffff; border:1px solid #000000 !important; border-right:0px solid #000000 !important; font-weight:bold;" width="15%">Qty</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="cv_lines" t-value="o.order_line.filtered(lambda l: l.cv_id == cv)"/>
+                                        <t t-foreach="cv_lines" t-as="l">
+                                            <tr t-att-style="'page-break-inside: avoid;'">
+                                                <td align="left" class="text-center" t-att-style="'padding:5px 10px; border:0.5px solid #ccc !important; border-right:0px solid #ccc !important;'">
+                                                    <span t-esc="l_index + 1"/>
+                                                </td>
+                                                <td align="left" class="text-left" t-att-style="'padding:5px 10px; border:0.5px solid #ccc !important; border-right:0px solid #ccc !important;'">
+                                                    <span t-field="l.product_id.name"/>
+                                                </td>
+                                                <td align="left" class="text-left" t-att-style="'padding:5px 10px; border:0.5px solid #ccc !important; border-right:0px solid #ccc !important;'">
+                                                    <span t-field="l.product_id.product_tmpl_id.motif_id.name"/>
+                                                </td>
+                                                <td align="center" class="text-right" t-att-style="'padding:5px 10px; border:0.5px solid #ccc !important; border-right:0px solid #ccc !important;'">
+                                                    <span t-esc="int(l.product_qty) if float(l.product_qty or 0.0).is_integer() else l.product_qty"/>
+                                                    <span t-field="l.product_uom.name"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="oe_structure"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <t t-if="not cv_last">
+                <div style="page-break-after: always;"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="batik_general_mod.template_exclusive_external_layout">
+        <t t-call="batik_general_mod.quotation_exclusive_header"/>
+        <div class="article o_report_layout_standard" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+            <t t-raw="0"/>
+        </div>
+    </template>
+
+    <template id="batik_general_mod.quotation_exclusive_header">
+        <div class="header">
+            <div class="oe_structure"/>
+            <div width="100%">
+                <div style="line-height:10px;" width="100%">
+                    <div style="background-color:#f2f2f2;overflow:visible;">
+                        <div align="left" style="float:left;padding:15px; width:40%; line-height:18px;" valign="top">
+                            <div>
+                                <img style="max-height: 50px; margin-top: 8%;" 
+                                    t-att-src="image_data_uri(o.company_id.logo)" 
+                                    t-if="o.company_id.logo"/>
+                            </div>
+                        </div>
+                        <div align="right" style="padding:15px; width:60%;float:right" valign="top">
+                            <table t-attf-style="text-transform:capitalize; color: #000000};">
+                                <tr>
+                                    <td t-attf-style="padding:9px 15px; font-weight:bold;font-size:16px;">
+                                        <span t-field="o.company_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                        <span t-field="o.company_id.street"/>, <span t-field="o.company_id.city"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                        Phone : <span t-field="o.company_id.phone"/>                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td t-attf-style="padding:9px 15px; font-weight:bold;">
+                                        Email : <span t-field="o.company_id.email"/>                                        
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

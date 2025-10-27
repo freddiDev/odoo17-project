@@ -1,0 +1,28 @@
+{
+    'name': 'POS membership',
+    'version': '1.0',
+    'summary': 'Custom POS Module',
+    'description': "Custpm Module to manage membership in POS",
+    'author': 'Freddi Tampubolon',
+    'depends': [
+        'base', 
+        'point_of_sale', 
+        'pos_loyalty',
+        'loyalty',
+    ],
+    'category': 'Custom',
+    'sequence': 8,
+    'data': [
+        'security/ir.model.access.csv',
+        'views/res_partner_view.xml',
+        'views/loyalty_program_view.xml',
+        'views/loyalty_rule_view.xml',
+        'views/loyalty_reward_view.xml',
+        'views/member_type_view.xml',
+        'views/menu.xml',
+    ],
+    'qweb': [],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

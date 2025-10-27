@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_picking_form_inherit_module_batik" model="ir.ui.view">
+        <field name="name">view.picking.form.inherit.module.batik</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="before">
+                <field name="cv_id" />
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_uom_qty']" position="after">
+                <field name="vendor_qty" />
+                <field name="qty_to_qc"/>
+                <field name="qty_pass"/>
+                <field name="qty_failed"/>
+                <field name="qc_final_required" column_invisible="True"/>
+                <field name="qty_final" attrs="{'readonly': [('qc_final_required', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="view_picking_move_tree_inherit_module_batik" model="ir.ui.view">
+        <field name="name">view.picking.move.tree.inherit.module.batik</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_picking_move_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='product_uom']" position="after">
+                <field name="state"/>
+                <field name="remarks" />
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

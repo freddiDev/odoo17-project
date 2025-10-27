@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+{
+    'name': 'Batik Purchase',
+    'version': '1.0',
+    'summary': 'Custom Purchase Module',
+    'description': "",
+    'depends': [
+        'base', 
+        'account',
+        'purchase', 
+        'stock',
+        'batik_general_mod',
+        'utm',
+        'portal',
+        'product',
+        'web',
+        'batik_inv_mod',
+    ],
+    'category': 'Custom',
+    'sequence': 4,
+    'data': [
+        'security/ir.model.access.csv',
+        'data/indexes.sql',
+        'data/ir_cron.xml',
+        'data/ir_sequence.xml',
+        'report/purchase_quatation.xml',
+        'report/purchase_summary.xml',
+        'report/purchase_analyst_report.xml',
+        'views/purchase.xml',
+        'views/res_config_settings.xml',
+        'views/res_company.xml',
+        'views/res_expedition.xml',
+        'views/vendor_logistic.xml',
+        'wizard/vendor_logistic_wizard.xml',
+        'wizard/leadtime_report_wizard.xml',
+        'wizard/purchase_analyst_report_wizard.xml',
+        'wizard/purchase_analyst_report.xml',
+        'wizard/purchase_ref_wiz.xml',
+        'views/leadtime_report.xml',
+        'views/purchase_summary.xml',
+        'views/logistic.xml',
+        'views/menu.xml',
+    ],
+    'qweb': [
+    ],
+    "assets": {
+        'web.assets_backend': [
+            'batik_purchase_mod/static/src/css/style.css',
+            'batik_purchase_mod/static/src/js/DynamicTable.js',
+            'batik_purchase_mod/static/src/js/SavePurchaseSummary.js',
+        ],
+    },
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

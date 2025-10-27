@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit view form untuk account.move.line -->
+    <record id="account_move_view_mod_batik" model="ir.ui.view">
+        <field name="name">account.move.mod.batik</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="warehouse_id" required="1"/>
+            </xpath>
+            <xpath expr="//field[@name='to_check']"  position="after">
+                <field name="vendor_logistic_id" readonly="1" invisible="move_type != 'in_invoice'"/>
+                <field name="vendor_return_id" readonly="1" invisible="move_type != 'in_refund'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

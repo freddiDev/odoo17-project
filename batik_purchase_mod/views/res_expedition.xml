@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_expedition_tree" model="ir.ui.view">
+        <field name="name">res.expedition.tree</field>
+        <field name="model">res.expedition</field>
+        <field name="arch" type="xml">
+            <tree string="Expedition" editable="bottom">
+                <field name="expedition_partner_id" required="True"/>
+                <field name="is_active" widget="boolean_toggle"/>
+                <field name="is_tempo" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="res_expedition_action" model="ir.actions.act_window">
+        <field name="name">Expedition</field>
+        <field name="res_model">res.expedition</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+</odoo>

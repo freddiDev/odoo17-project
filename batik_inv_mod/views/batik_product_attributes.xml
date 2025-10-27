@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View Product Motif -->
+    <record id="product_motif_view_tree" model="ir.ui.view">
+        <field name="name">product.motif.view.tree</field>
+        <field name="model">product.motif</field>
+        <field name="arch" type="xml">
+            <tree string="List Product Motif">
+                <field name="name" />
+                <field name="warna" />
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_motif_view_form" model="ir.ui.view">
+        <field name="name">product.motif.view.form</field>
+        <field name="model">product.motif</field>
+        <field name="arch" type="xml">
+            <form string="Add Product Motif">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="code" readonly="1" force_save="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="warna" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- View Product Size -->
+    <record id="product_size_view_tree" model="ir.ui.view">
+        <field name="name">product.size.view.tree</field>
+        <field name="model">product.size</field>
+        <field name="arch" type="xml">
+            <tree string="List Product Size">
+                <field name="name" />
+                <field name="size" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_size_view_form" model="ir.ui.view">
+        <field name="name">product.size.view.form</field>
+        <field name="model">product.size</field>
+        <field name="arch" type="xml">
+            <form string="Add Product Size">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" />
+                        </group>
+                        <group>
+                            <field name="size" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- View Product Color -->
+    <record id="product_color_view_tree" model="ir.ui.view">
+        <field name="name">product.color.view.tree</field>
+        <field name="model">product.color</field>
+        <field name="arch" type="xml">
+            <tree string="List Product Color">
+                <field name="name" />
+                <field name="color" />
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_color_view_form" model="ir.ui.view">
+        <field name="name">product.color.view.form</field>
+        <field name="model">product.color</field>
+        <field name="arch" type="xml">
+            <form string="Add Product Color">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="color" />
+                        </group>
+                        <group>
+                            <field name="code" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- view product model -->
+        <!-- View Product Size -->
+    <record id="product_model_view_tree" model="ir.ui.view">
+        <field name="name">product.model.view.tree</field>
+        <field name="model">product.model</field>
+        <field name="arch" type="xml">
+            <tree string="List Product Model">
+                <field name="kode_model" />
+                <field name="name"/>
+                <field name="size" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_model_view_form" model="ir.ui.view">
+        <field name="name">product.model.view.form</field>
+        <field name="model">product.model</field>
+        <field name="arch" type="xml">
+            <form string="Add Product Model">
+                <sheet>
+                    <field name="logo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="kode_model" class="oe_edit_only"/>
+                        <h1>
+                            <field name="kode_model" readonly="1" force_save="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="descriptions" />
+                        </group>
+                        <group>
+                            <field name="size" widget="many2many_tags"/>
+                            <field name="category" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- view Product CV -->
+    <record id="product_cv_view_tree" model="ir.ui.view">
+        <field name="name">product.cv.view.tree</field>
+        <field name="model">product.cv</field>
+        <field name="arch" type="xml">
+            <tree string="List of CV">
+                <field name="name" />
+                <field name="warehouse_id" />
+                <field name="persentase_double_book_Keeping" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="product_cv_view_form" model="ir.ui.view">
+        <field name="name">product.cv.view.form</field>
+        <field name="model">product.cv</field>
+        <field name="arch" type="xml">
+            <form string="Add CV">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+
+                        <label for="persentase_double_book_Keeping" class="oe_edit_only"/>
+                        <h4><field name="persentase_double_book_Keeping" /></h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="warehouse_id" />
+                            <field name="expedition_cash_bank_account"/>
+                        </group>
+                        <group>
+                            <field name="category_id" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions view -->
+    <record id="product_motif_action" model="ir.actions.act_window">
+        <field name="name">Product Motif</field>
+        <field name="res_model">product.motif</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+
+    <record id="product_size_action" model="ir.actions.act_window">
+        <field name="name">Product Sizes</field>
+        <field name="res_model">product.size</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+
+    <record id="product_color_action" model="ir.actions.act_window">
+        <field name="name">Product Color</field>
+        <field name="res_model">product.color</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="product_model_action" model="ir.actions.act_window">
+        <field name="name">Product Model</field>
+        <field name="res_model">product.model</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+     <record id="product_cv_action" model="ir.actions.act_window">
+        <field name="name">Product CV</field>
+        <field name="res_model">product.cv</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_regional,res.regional,model_res_regional,,1,1,1,1
+access_categ_product_cv_line,categ.product.cv.line,model_categ_product_cv_line,,1,1,1,1

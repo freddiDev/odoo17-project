@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_vendor_logistic_wizard_form" model="ir.ui.view">
+        <field name="name">vendor.logistic.wizard.form</field>
+        <field name="model">vendor.logistic.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirm Logistic">
+                <sheet>
+                    <group>
+                        <field name="logistic_id" invisible="True"/>
+                        <field name="currency_id" invisible="True"/>
+                    </group>
+
+                    <separator string="Tempo Expeditions"/>
+                    <field name="logistic_line_tempo_ids" nolabel="1">
+                        <tree create="false" delete="false">
+                            <field name="expedition_id" readonly="1"/>
+                            <field name="purchase_id"/>
+                            <field name="expedition_payment_type" readonly="1" column_invisible="True"/>
+                            <field name="no_resi" readonly="1"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="expedition_payment_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </tree>
+                    </field>
+
+                    <separator string="Cash Expeditions"/>
+                    <field name="logistic_line_non_tempo_ids" nolabel="1">
+                        <tree create="false" delete="false">
+                            <field name="expedition_id" readonly="1"/>
+                            <field name="purchase_id"/>
+                            <field name="expedition_payment_type" readonly="1" column_invisible="True"/>
+                            <field name="no_resi" readonly="1"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="expedition_payment_amount" readonly="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        </tree>
+                    </field>
+
+                    <footer>
+                        <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

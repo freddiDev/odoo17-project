@@ -1,0 +1,17 @@
+input.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-gradient-primary {
+  background: linear-gradient(45deg, #007bff, #00c6ff);
+  border: none;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.btn-gradient-primary:hover {
+  background: linear-gradient(45deg, #0056b3, #0099cc);
+  transform: scale(1.03);
+}

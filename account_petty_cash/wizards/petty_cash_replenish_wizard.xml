@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_petty_cash_replenish_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.replenish.wizard.form</field>
+        <field name="model">petty.cash.replenish.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Replenish Petty Cash">
+                <group>
+                    <field name="petty_cash_id" readonly="1"/>
+                    <field name="company_id" readonly="1"/>
+                    <field name="currency_id" invisible="1"/>
+                </group>
+                <group>
+                    <field name="current_fund_amount" readonly="1"/>
+                    <field name="replenish_amount"/>
+                    <field name="final_amount" readonly="1"/>
+                </group>
+                <group>
+                    <field name="journal_id"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

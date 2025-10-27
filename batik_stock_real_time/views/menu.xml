@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <record id="action_stock_real_time_page" model="ir.actions.client">
+        <field name="name">Dashboard</field>
+        <field name="tag">stock_real_time</field>
+        <field name="target">main</field>
+    </record>
+
+     <menuitem id="menu_stock_real_time_page" name="Warehouse Compare"
+            parent="stock.menu_stock_warehouse_mgmt" 
+            action="action_stock_real_time_page"
+            sequence="6"/>
+
+</odoo>

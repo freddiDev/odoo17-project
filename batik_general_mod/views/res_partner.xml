@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_inherit_batik" model="ir.ui.view">
+        <field name="name">view.partner.form.inherit.batik</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]/h1" position="after">
+                <field name="code" placeholder="Vendor Code" required="1"/>
+            </xpath>
+            <xpath expr="//field[@name='property_account_position_id']" position="after">
+                <field name="expedition_payment_type" required="1"/>
+                <field name="sharing_cost" 
+                       modifiers="{'invisible': [('expedition_payment_type', '!=', 'half')], 'required': [('expedition_payment_type', '=', 'half')]}"/>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="leadtime_plan" required="1"/>
+                <field name="leadtime_actual" readonly="1"/>
+                <field name="leadtime_status" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="legal_document" string="Legal Documents">
+                    <group>
+                        <group>
+                            <field name="file_name_ktp" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_ktp" string="KTP"/>
+                                <newline/>
+                                <field name="file_ktp" filename="file_name_ktp" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="filename_npwp" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_npwp"/>
+                                <newline/>
+                                <field name="file_npwp" filename="filename_npwp" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_sktkp" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_sktkp"/>
+                                <newline/>
+                                <field name="file_sktkp" filename="file_name_sktkp" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_account_number" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_account_number"/>
+                                <newline/>
+                                <field name="file_account_number" filename="file_name_account_number" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_others" invisible="1"/>
+                            <div>
+                                <label for="file_others"/>
+                                <newline/>
+                                <field name="file_others" filename="file_name_others" widget="binary" style="width:350px;"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="file_name_nib_number" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_nib_number"/>
+                                <newline/>
+                                <field name="file_nib_number" filename="file_name_nib_number" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_surat_kuasa" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_surat_pernyataan_kuasa"/>
+                                <newline/>
+                                <field name="file_surat_pernyataan_kuasa" filename="file_name_surat_kuasa" widget="binary"  style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_akta" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_akta"/>
+                                <newline/>
+                                <field name="file_akta" filename="file_name_akta" widget="binary" style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_ahu" invisible="1"/>
+                            <div style="margin-bottom:35px;">
+                                <label for="file_ahu"/>
+                                <newline/>
+                                <field name="file_ahu" filename="file_name_ahu" widget="binary"  style="width:350px;"/>
+                            </div>
+
+                            <field name="file_name_sks" invisible="1"/>
+                            <div>
+                                <label for="file_sks"/>
+                                <newline/>
+                                <field name="file_sks" filename="file_name_sks" widget="binary"  style="width:350px;"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_account_petty_cash","petty.cash","model_petty_cash",,1,1,1,1
+"access_account_petty_cash_voucher","petty.cash.voucher","model_petty_cash_voucher",,1,1,1,1
+"access_petty_cash_reconcile_wizard","petty.cash.reconcile.wizard","model_petty_cash_reconcile_wizard",,1,1,1,1
+"access_petty_cash_replenish_wizard","petty.cash.replenish.wizard","model_petty_cash_replenish_wizard",,1,1,1,1

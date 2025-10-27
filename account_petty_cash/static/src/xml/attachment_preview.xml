@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <t t-name="account_petty_cash.AttachmentPreview" owl="1">
+        <div class="o_attachment_preview">
+            <t t-if="hasPreview">
+                <img t-att-src="previewSrc"
+                    t-att-alt="fileName"
+                    style="max-width:40px; max-height:40px; cursor:pointer;"
+                    t-on-click="openPreview"/>
+            </t>
+            <t t-else="">
+                <span class="text-muted">No File</span>
+            </t>
+        </div>
+    </t>
+    <t t-name="account_petty_cash.AttachmentPreviewDialog" owl="1">
+        <t t-set="dialogProps" t-value="{ title: props.title, size: 'lg' }"/>
+        <Dialog t-props="dialogProps">
+            <img t-att-src="props.src"
+                t-att-alt="props.title"
+                style="max-width:100%; height:auto; display:block; margin:0 auto;"/>
+        </Dialog>
+    </t>
+</templates>

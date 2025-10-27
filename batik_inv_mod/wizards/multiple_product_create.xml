@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wiz_product_multiple_form_view" model="ir.ui.view">
+        <field name="name">wiz.product.multiple.form.view</field>
+        <field name="model">wiz.product.multiple</field>
+        <field name="arch" type="xml">
+            <form string="Wizard for Multiple Product Creation">
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="motif_id"/>
+                        <field name="model_id" />
+                    </group>
+                    <notebook>
+                        <page string="Product Lines">
+                            <field name="line_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="category_id"/>
+                                    <field name="color_ids" widget="many2many_tags"/>
+                                    <field name="size_ids" widget="many2many_tags"/>
+                                    <field name="is_automated"/>
+                                    <field name="product_name"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Validate" type="object" name="action_confirm" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wiz_product_multiple" model="ir.actions.act_window">
+        <field name="name">Multiple Product Wizard</field>
+        <field name="res_model">wiz.product.multiple</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wiz_product_multiple_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

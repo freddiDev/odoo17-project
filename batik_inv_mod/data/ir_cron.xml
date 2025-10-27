@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ir_cron_reset_sequence_code_motif_monthly" model="ir.cron">
+        <field name="name">Reset Monthly Sequence Code Motif </field>
+        <field name="model_id" ref="base.model_ir_sequence"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model.reset_monthly_code_motif()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(months=1)).replace(day=1, hour=0, minute=1, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <record id="ir_cron_reset_sequence_code_motif_monthly" model="ir.cron">
+        <field name="name">Reset Monthly Sequence Code Model </field>
+        <field name="model_id" ref="base.model_ir_sequence"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model.reset_monthly_code_model()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + relativedelta(months=1)).replace(day=1, hour=0, minute=1, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+</odoo>

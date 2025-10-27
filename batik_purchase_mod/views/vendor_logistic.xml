@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="vendor_logistic_view_tree" model="ir.ui.view">
+        <field name="name">vendor.logistic.view.tree</field>
+        <field name="model">vendor.logistic</field>
+        <field name="arch" type="xml">
+            <tree string="Vendor Logistic">
+                <field name="name"/>
+                <field name="partner_id" />
+                <field name="state" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="vendor_logistic_view_form" model="ir.ui.view">
+        <field name="name">vendor.logistic.view.form</field>
+        <field name="model">vendor.logistic</field>
+        <field name="arch" type="xml">
+            <form string="Vendor Logistic">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_done" type="object" string="Done" invisible="state != 'confirm'" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>          
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                         <button name="action_open_account_move" type="object"
+                                class="oe_stat_button"
+                                invisible="account_move_count == 0"
+                                icon="fa-pencil-square-o">
+                            <field name="account_move_count"/>
+                            <span>Bills</span>
+                        </button>
+                    </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" readonly="1" force_save="1" class="oe_inline"/>
+                            </h1>
+                        </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" required="1"/>
+                            <field name="warehouse_id" required="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="logistic" string="Logistic Lines">
+                            <field name="logistic_line_ids" nolabel="1" widget="one2many_list">
+                                <tree string="Logistic Lines" editable="bottom">
+                                    <field name="purchase_order_id" domain="[('id', 'not in', purchase_order_allowed_ids)]"/>
+                                    <field name="purchase_order_allowed_ids" widget="many2many_tags" column_invisible="True"/>
+                                    <field name="inventory_logistic_id" column_invisible="True"/>
+                                    <field name="expedition_id"/>
+                                    <field name="no_resi" />
+                                    <field name="pickup_date"/>
+                                    <field name="expedition_payment_type" readonly="1"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="expedition_payment_amount" widget="monetary" options="{'currency_field': 'currency_id'}" align="left"/>
+                                    <field name="is_tempo" column_invisible="True"/>
+                                </tree>
+                            </field>
+                            
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+     <record id="vendor_logistic_action" model="ir.actions.act_window">
+        <field name="name">Vendor Logistic</field>
+        <field name="res_model">vendor.logistic</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

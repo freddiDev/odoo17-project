@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_petty_cash_reconcile_wizard_form" model="ir.ui.view">
+        <field name="name">petty.cash.reconcile.wizard.form</field>
+        <field name="model">petty.cash.reconcile.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reconcile Petty Cash">
+                <group>
+                    <field name="petty_cash_id"/>
+                    <field name="amount_total"/>
+                </group>
+                <field name="voucher_ids" readonly="1">
+                    <tree string="Approved Vouchers">
+                        <field name="date"/>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="amount"/>
+                        <field name="state"/>
+                    </tree>
+                </field>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

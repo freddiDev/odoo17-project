@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_view_logistics_header_form" model="ir.ui.view">
+        <field name="name">inherit.view.logistics.header.form</field>
+        <field name="model">logistics.header</field>
+        <field name="inherit_id" ref="batik_inv_mod.view_logistics_header_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="logistic_line_ids" widget="many2many_tags" required="1" invisible="state == 'done'" domain="logistic_line_domain"/>
+                <field name="logistic_line_domain" invisible="1"/>
+            </xpath>
+            <xpath expr="//button[@name='action_submit']" position="after">
+                    <button name="find_item" 
+                        type="object" 
+                        string="Find Item" 
+                        class="oe_highlight oe_stat_button button-find-item"
+                        icon="fa-search"
+                        invisible="state=='done'"
+                        style="background:#7681eadd;margin-right:35px;"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

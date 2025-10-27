@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_inherit_tree_view" model="ir.ui.view">
+        <field name="name">stock.picking.inherit.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="group_id" position="after">
+                <field name="reception_percentage"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_picking_form_inherit_qc" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.qc</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- PATCH field state (bukan tambah field baru) -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="widget">statusbar</attribute>
+                <attribute name="statusbar_visible">draft,waiting,confirmed,assigned,qc,done</attribute>
+            </xpath>
+
+            <!-- Tambah button -->
+            <xpath expr="//header" position="inside">
+                <button name="action_process_qc"
+                        type="object"
+                        string="Process QC"
+                        class="oe_highlight"
+                        invisible="state != 'assigned'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='date_deadline']" position="before">
+                <field name="security_check_date" readonly="1" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

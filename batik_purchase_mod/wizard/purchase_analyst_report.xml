@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_analyst_report_view_tree" model="ir.ui.view">
+        <field name="name">purchase.analyst.report.view.tree</field>
+        <field name="model">purchase.analyst.report</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Analyst Report">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="partner_id"/>  
+                <field name="product_id"/>
+                <field name="product_code" />
+                <field name="qty_po" />
+                <field name="qty_sale"/>
+                <field name="price" widget="monetary"/>
+                <field name="subtotal" widget="monetary"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

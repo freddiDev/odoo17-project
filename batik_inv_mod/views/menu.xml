@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_interwarehouse_transfer" 
+        name="Interwarehouse Transfers" 
+        parent="stock.menu_stock_warehouse_mgmt" 
+        action="batik_inv_mod.action_interwarehouse_transfer" 
+        sequence="3"/>
+
+
+     <menuitem id="menu_interwarehouse_transfer_auditor" 
+        name="Interwarehouse Transfers Auditor" 
+        parent="stock.menu_stock_warehouse_mgmt" 
+        action="batik_inv_mod.action_interwarehouse_transfer_auditor" 
+        sequence="2"/>
+
+    <menuitem id="menu_interlocation_transfer" 
+        name="Inter-Location Transfers" 
+        parent="stock.menu_stock_warehouse_mgmt" 
+        action="batik_inv_mod.action_interlocation_transfer" 
+        sequence="5"/>
+
+    <menuitem
+        id="product_motif_menu"
+        name="Product Motif"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.product_motif_action"
+        sequence="10"/>
+
+    <menuitem
+        id="product_size_menu"
+        name="Product Size"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.product_size_action"
+        sequence="11"/>
+
+    <menuitem
+        id="product_color_menu"
+        name="Product Color"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.product_color_action"
+        sequence="12"/>
+
+    <menuitem
+        id="product_model_menu"
+        name="Product Model"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.product_model_action"
+        sequence="13"/>
+    
+    <menuitem
+        id="product_cv_menu"
+        name="Product CV"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.product_cv_action"
+        sequence="14"/>
+
+    <menuitem
+        id="multiple_product_create"
+        name="Product Create"
+        parent="stock.menu_stock_inventory_control"
+        action="batik_inv_mod.action_wiz_product_multiple"
+        sequence="15"/>
+
+    <menuitem 
+        id="vendor_return_menu" 
+        name="Vendor Returns" 
+        parent="stock.menu_stock_warehouse_mgmt" 
+        action="batik_inv_mod.vendor_return_action"
+        sequence="16"/>
+
+    <menuitem 
+        id="menu_update_sale_price" 
+        name="Update Harga Jual" 
+        parent="stock.menu_stock_inventory_control" 
+        action="batik_inv_mod.action_update_sale_price_wizard"
+        sequence="17"/>
+    
+    <menuitem 
+        id="menu_logistics_header"
+        name="Logistik" 
+        parent="stock.menu_stock_warehouse_mgmt" 
+        action="batik_inv_mod.action_logistics_header"
+        sequence="18"/>
+
+
+</odoo>

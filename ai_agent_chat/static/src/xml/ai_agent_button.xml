@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ai_agent_chat.AIAgentButton">
+        <!-- Floating button -->
+        <div class="ai-agent-button-container">
+            <button t-on-click="togglePopup" class="ai-agent-floating-button">
+                <img src="/ai_agent_chat/static/src/img/ai_agent_icon.png" alt="AI Agent" />
+            </button>
+            
+            <!-- Popup dialog -->
+            <div t-if="state.isOpen" class="ai-agent-popup">
+                <div class="ai-agent-popup-header">
+                    <div class="ai-agent-popup-title">
+                        <img src="/ai_agent_chat/static/src/img/ai_agent_icon.png" alt="AI Agent" class="ai-agent-icon" />
+                        <span>AI Agent</span>
+                    </div>
+                    <button t-on-click="closePopup" class="ai-agent-close-button">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="ai-agent-popup-tabs">
+                    <button t-attf-class="ai-agent-tab-button {{ state.activeTab === 'conversation' ? 'active' : '' }}"
+                            t-on-click="() => this.switchTab('conversation')">
+                        Conversation
+                    </button>
+                </div>
+                
+                <div class="ai-agent-popup-content">
+                    <!-- Conversation tab -->
+                    <div t-if="state.activeTab === 'conversation'" class="ai-agent-conversation">
+                        <div class="ai-agent-messages-container" t-on-scroll="handleScroll" t-ref="messagesContainer">
+                            <t t-foreach="state.messages" t-as="message" t-key="message.id">
+                                <div t-attf-class="ai-agent-message {{ message.direction === 'incoming' ? 'ai-agent-user-message' : 'ai-agent-bot-message' }}">
+                                    <div class="ai-agent-message-content">
+                                        <pre t-esc="message.content"/>
+                                    </div>
+                                    <div class="ai-agent-message-timestamp">
+                                        <small><t t-esc="formatMessageTime(message.timestamp)"/></small>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-agent-popup-footer">
+                    <input type="text" placeholder="Ask me about your leads..." class="ai-agent-message-input" 
+                           t-on-keyup="sendMessage" t-ref="messageInput"/>
+                    <button class="ai-agent-send-button" t-on-click="sendMessageButton">
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

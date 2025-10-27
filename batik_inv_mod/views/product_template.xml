@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="product_template_view_tree_inherit_batik" model="ir.ui.view">
+        <field name="name">product.template.view.tree.inherit.batik</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='responsible_id']" position="after">
+                <field name="motif_id" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_view_form_inherit_batik" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit.batik</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='barcode']" position="after">
+                <field name="model_id"/>
+                <field name="motif_id" />
+                <field name="size_id" />
+                <field name="color_id" />
+            </xpath>
+
+            <xpath expr="//notebook/page[last()]" position="after">
+                <page name="product_cv" string="CV">
+                    <group>
+                        <field name="partner_id"/>
+                    </group>
+                    <field name="product_cv_template_ids">
+                        <tree editable="bottom">
+                            <field name="warehouse_id" />
+                            <field name="cv_id" 
+                                options="{'no_create': True, 'no_edit': True}" 
+                                readonly="warehouse_id == False"
+                                domain="[('id', 'in', product_cv_filter_ids)]"/>
+                            <field name="product_template_id" column_invisible="1"/>
+                            <field name="product_cv_filter_ids" column_invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="inherit_product_supplierinfo_tree_view_batik" model="ir.ui.view">
+        <field name="name">inherit.product.supplierinfo.form.view.batik</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="before">
+                <field name="related_partner_id" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('id','=',related_partner_id)]</attribute>
+            </xpath>            
+        </field>
+    </record>
+
+</odoo>

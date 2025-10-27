@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="view_interwarehouse_transfer_tree" model="ir.ui.view">
+        <field name="name">interwarehouse.transfer.tree</field>
+        <field name="model">interwarehouse.transfer</field>
+        <field name="arch" type="xml">
+            <tree string="Interwarehouse Transfers">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="source_warehouse_id"/>
+                <field name="destination_warehouse_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_interwarehouse_transfer_auditor_tree" model="ir.ui.view">
+        <field name="name">interwarehouse.transfer.auditor.tree</field>
+        <field name="model">interwarehouse.transfer.auditor</field>
+        <field name="arch" type="xml">
+            <tree string="Interwarehouse Transfers Auditor">
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date" />
+                <field name="source_warehouse_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_interlocation_transfer_tree" model="ir.ui.view">
+        <field name="name">interlocation.transfer.tree</field>
+        <field name="model">interlocation.transfer</field>
+        <field name="arch" type="xml">
+            <tree string="Inter-Location Transfers">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="warehouse_id"/>
+                <field name="source_location_id"/>
+                <field name="destination_location_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_interwarehouse_transfer_form" model="ir.ui.view">
+        <field name="name">interwarehouse.transfer.form</field>
+        <field name="model">interwarehouse.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Interwarehouse Transfer" readonly="state == 'done'">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_transit" type="object" string="Transit" invisible="state != 'packing'" class="btn-primary"/>
+                    <button name="action_done" 
+                        type="object" 
+                        string="Done" 
+                        class="btn-success" 
+                        invisible="not is_can_validate or state != 'transit'"/>
+                    <field name="is_can_validate" invisible="1"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,packing,transit,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="not (state in ['done', 'packing', 'transit'])">
+                        <button name="action_picking_move_tree" class="oe_stat_button" icon="fa-arrows-v" type="object" help="List view of operations">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Operations</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="source_warehouse_id" readonly="state == 'done'"/>
+                            <field name="destination_warehouse_id" readonly="state == 'done'"/>
+                            <field name="date" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="stock_location_id" 
+                                domain="[
+                                    ('warehouse_id', '=', source_warehouse_id),
+                                    ('usage', '=', 'internal')
+                                ]"
+                                readonly="state == 'done'"/>
+                            <field name="dest_location_id" 
+                                domain="[
+                                    ('warehouse_id', '=', destination_warehouse_id),
+                                    ('usage', '=', 'internal')
+                                ]"
+                                readonly="state == 'done'"/>
+                            <field name="user_id" required="1" readonly="state == 'done'"/>
+                        </group>
+                        <div>
+                            <field name="remark" placeholder="Remarks..." readonly="state == 'done'"/>
+                        </div>
+                    </group>
+                   
+                    <notebook>
+                        <page string="Transfer Lines">
+                            <field name="transfer_line_ids" readonly="state == 'done'">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_code"/>
+                                    <field name="uom_id"/>
+                                    <field name="current_quantity" readonly="1" force_save="1"/>
+                                    <field name="current_quantity_dest" readonly="1" force_save="1"/>
+                                    <field name="transfer_quantity" readonly="state != 'draft' or current_quantity &lt;= 0"/>
+                                    <field name="qty_transit" readonly="state != 'packing'"/>
+                                    <field name="is_current_user" column_invisible="True"/>
+                                    <field name="qty_received" readonly="state != 'transit' or not is_current_user"/>
+                                    <field name="state" column_invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_interwarehouse_transfer_auditor_form" model="ir.ui.view">
+        <field name="name">interwarehouse.transfer.auditor.form</field>
+        <field name="model">interwarehouse.transfer.auditor</field>
+        <field name="arch" type="xml">
+            <form string="Interwarehouse Transfer Auditor">
+                <header>
+                    <button name="action_confirm" 
+                        type="object" 
+                        string="Confirm" 
+                        class="btn-success"
+                        invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="start_date" readonly="state == 'done'"/>
+                            <field name="source_warehouse_id" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="end_date" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+                    <div class="pull-right">
+                        <button name="find_document" 
+                            type="object" 
+                            string="Find Item" 
+                            class="oe_highlight oe_stat_button button-find-item"
+                            icon="fa-search"
+                            invisible="state == 'done'"
+                            style="background:#7681eadd;margin-top:-30px;margin-right:35px;"/>
+                    </div>
+                   
+                    <notebook>
+                        <page string="Product List">
+                            <field name="auditor_line_ids" readonly="state == 'done'">
+                                <tree editable="bottom" create="0">
+                                    <field name="state" column_invisible="True"/>
+                                    <field name="auditor_id" column_invisible="True"/>
+                                    <field name="transfer_warehouse_id" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="product_code" readonly="1"/>
+                                    <field name="transit_qty" readonly="1"/>
+                                    <field name="move_qty"  readonly="state == 'done'"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_interlocation_transfer_form" model="ir.ui.view">
+        <field name="name">interlocation.transfer.form</field>
+        <field name="model">interlocation.transfer</field>
+        <field name="arch" type="xml">
+            <form string="Inter-Location Transfer">
+                <header>
+                    <button name="action_confirm" 
+                        type="object" 
+                        string="Confirm" 
+                        class="btn-success"
+                        invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="warehouse_id" readonly="state == 'done'"/>
+                            <field name="date" readonly="state == 'done'"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="source_location_id" domain="[('usage', '=', 'internal'), ('warehouse_id', '=', warehouse_id)]" readonly="state == 'done'"/>
+                            <field name="destination_location_id" domain="[('usage', '=', 'internal'), ('warehouse_id', '=', warehouse_id)]" readonly="state == 'done'"/>
+                            <field name="create_date" />
+                            <field name="create_uid" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Operation">
+                            <field name="transfer_line_ids">
+                                <tree editable="bottom">
+                                    <field name="state" column_invisible="True"/>
+                                    <field name="transfer_id" column_invisible="True"/>
+                                    <field name="product_id" readonly="state == 'done'"/>
+                                    <field name="product_code" readonly="1"/>
+                                    <field name="uom_id" readonly="1"/>
+                                    <field name="current_quantity" readonly="1" force_save="1"/>
+                                    <field name="transfer_quantity"  readonly="state == 'done'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Note">
+                            <field name="remark" placeholder="Remarks..." readonly="state == 'done'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_interwarehouse_transfer" model="ir.actions.act_window">
+        <field name="name">Interwarehouse Transfers</field>
+        <field name="res_model">interwarehouse.transfer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Interwarehouse Transfer
+            </p>
+        </field>
+    </record>
+
+    <record id="action_interwarehouse_transfer_auditor" model="ir.actions.act_window">
+        <field name="name">Interwarehouse Transfers Auditor</field>
+        <field name="res_model">interwarehouse.transfer.auditor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Interwarehouse Transfer Auditor
+            </p>
+        </field>
+    </record>
+
+     <record id="action_interlocation_transfer" model="ir.actions.act_window">
+        <field name="name">Inter-Location Transfers</field>
+        <field name="res_model">interlocation.transfer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first interlocation Transfer
+            </p>
+        </field>
+    </record>
+
+</odoo>

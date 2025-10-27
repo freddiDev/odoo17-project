@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_summary_tree" model="ir.ui.view">
+        <field name="name">purchase.summary.tree</field>
+        <field name="model">purchase.summary</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Summary">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="warehouse_ids" widget="many2many_tags"/>
+                <field name="motif_ids" widget="many2many_tags"/>
+                <field name="color_ids" widget="many2many_tags"/>
+                <field name="model_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_summary_form" model="ir.ui.view">
+        <field name="name">purchase.summary.form</field>
+        <field name="model">purchase.summary</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Summary">
+                <header>
+                    <button string="Validate"
+                        class="oe_highlight"
+                        icon="fa-file-text-o"
+                        title="Create RFQ"
+                        name="button_validate" type="object"
+                         invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                         <button name="action_open_purchase_orders" type="object"
+                                class="oe_stat_button"
+                                invisible="purchase_order_count == 0"
+                                icon="fa-shopping-cart">
+                            <field name="purchase_order_count"/>
+                            <span>Purchase</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" readonly="1" force_save="1" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="state == 'done'"/>
+                            <field name="warehouse_ids" widget="many2many_tags_dynamic" class="o_field_many2manytags" readonly="state == 'done'"/>
+                            <field name="date" readonly="state == 'done'"/>
+                        </group>
+                        <group>
+                            <field name="motif_ids" widget="many2many_tags" readonly="state == 'done'"/>
+                            <field name="color_ids" widget="many2many_tags" readonly="state == 'done'"/>
+                            <field name="model_ids" widget="many2many_tags" readonly="state == 'done'"/>
+                        </group>
+                        
+                    </group>
+                    <div class="float-end">
+                        <button name="find_item" 
+                            type="object" 
+                            string="Find Item" 
+                            class="oe_highlight oe_stat_button button-find-item"
+                            icon="fa-search"
+                            invisible="state == 'done'"
+                            style="background:#7681eadd;margin-top:-30px;margin-right:65px;!important"/>
+                    </div>
+
+                    <div class="o_notebook_headers">
+                        <ul class="nav nav-tabs" style="width:100%;">
+                            <li class="nav-item">
+                                <a data-toggle="tab" href="#" class="nav-link active" role="tab">Product Summary</a>
+                            </li>
+                        </ul>
+                        <div class="custom_table_container">
+                            <table class="custom_table">
+                                <thead>
+                                    <tr id="dynamic_table_header">
+                                        <th>No</th>
+                                        <th>Product Code</th>
+                                        <th>Product</th>
+                                        <th>Size</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dynamic_table_body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_summary" model="ir.actions.act_window">
+        <field name="name">Purchase Summary</field>
+        <field name="res_model">purchase.summary</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_expedition,res.expedition,model_res_expedition,,1,1,1,1
+access_vendor_logistic,vendor.logistic,model_vendor_logistic,,1,1,1,1
+access_vendor_logistic_line,vendor.logistic.line,model_vendor_logistic_line,,1,1,1,1
+access_vendor_logistic_wizard,vendor.logistic.wizard,model_vendor_logistic_wizard,,1,1,1,1
+access_vendor_logistic_wizard_line,vendor.logistic.wizard.line,model_vendor_logistic_wizard_line,,1,1,1,1
+access_purchase_summary,purchase.summary,model_purchase_summary,,1,1,1,1
+access_purchase_summary_line,purchase.summary.line,model_purchase_summary_line,,1,1,1,1
+access_leadtime_report,leadtime.report.result,model_leadtime_report_result,,1,1,1,1
+access_leadtime_report_wizard,leadtime.report.wizard.result,model_leadtime_report_wizard,,1,1,1,1
+access_purchase_analyst_report_wiz,purchase.analyst.report.wiz,model_purchase_analyst_report_wiz,,1,1,1,1
+access_purchase_analyst_report,purchase.analyst.report,model_purchase_analyst_report,,1,1,1,1
+access_purchase_ref_wiz,purchase.ref.wiz,model_purchase_ref_wiz,,1,1,1,1
+access_purchase_ref_wiz_line,purchase.ref.wiz.line,model_purchase_ref_wiz_line,,1,1,1,1

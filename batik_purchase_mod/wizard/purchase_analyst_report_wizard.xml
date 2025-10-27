@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_purchase_analyst_report" model="ir.actions.act_window">
+        <field name="name">Purchase Analyst Report</field>
+        <field name="res_model">purchase.analyst.report.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <record id="view_purchase_analyst_report_wizard" model="ir.ui.view">
+        <field name="name">purchase.analyst.report.wizard.form</field>
+        <field name="model">purchase.analyst.report.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Analyst Report Wizard">
+                <group>
+                    <group>
+                        <field name="start_date"/>
+                        <field name="partner_id" />
+                    </group>
+                    <group>
+                        <field name="end_date" />
+                        <field name="warehouse_id" />
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <label for="generated_type"/>
+                        <div>
+                            <field name="generated_type" class="oe_inline"/>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="product_id" invisible="generated_type !=  'product'"/>
+                        <field name="category_id" invisible="generated_type != 'product_category'"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate_report" type="object" class="btn-primary" string="Generate"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_regional_view_tree" model="ir.ui.view">
+        <field name="name">res.regional.view.tree</field>
+        <field name="model">res.regional</field>
+        <field name="arch" type="xml">
+            <tree string="Regional" editable="bottom">
+                <field name="company_id" readonly="1" force_save="1"/>
+                <field name="name"/>
+                <field name="warehouse_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="action_res_regional" model="ir.actions.act_window">
+        <field name="name">Regional</field>
+        <field name="res_model">res.regional</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem
+        id="res_regional_menu"
+        name="Regional"
+        action="action_res_regional"
+        parent="base.menu_users"
+        sequence="10"/>
+
+</odoo>

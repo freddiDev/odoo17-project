@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_petty_cash_tree" model="ir.ui.view">
+        <field name="name">petty.cash.tree</field>
+        <field name="model">petty.cash</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="accounting_date"/>
+                <field name="custodian_id"/>
+                <field name="fund_amount"/>
+                <field name="balance"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_petty_cash_form" model="ir.ui.view">
+        <field name="name">petty.cash.form</field>
+        <field name="model">petty.cash</field>
+        <field name="arch" type="xml">
+            <form string="Petty Cash">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_open_reconcile_wizard" type="object" string="Reconcile" invisible="state != 'confirm'"/>
+                    <button name="action_open_replenish_wizard" type="object" string="Replenish"
+                            invisible="balance == fund_amount or is_custodian == False"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object"  name="action_view_vouchers"
+                            class="oe_stat_button"
+                            icon="fa-ticket" invisible="voucher_count == 0">
+                            <field name="voucher_count" widget="statinfo" string="Vouchers"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="accounting_date" required="state == 'draft'" readonly="state == 'confirm'"/>
+                            <field name="custodian_id" required="state == 'draft'" readonly="state == 'confirm'"/>
+                            <field name="cash_journal_id" required="state == 'draft'" readonly="state == 'confirm'"/>
+                            <field name="petty_cash_journal_id" required="state == 'draft'" readonly="state == 'confirm'"/>
+                            <field name="fund_amount" required="state == 'draft'" readonly="state == 'confirm'"/>
+                        </group>
+                        <group>
+                            <field name="balance" readonly="1"/>
+                            <field name="virtual_balance" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id"/>
+                            <field name="warehouse_id" required="state == 'draft'"/>
+                            <field name="is_custodian" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Voucher History">
+                            <field name="voucher_ids" readonly="1">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="submitter_id"/>
+                                    <field name="amount"/>
+                                    <field name="move_id" column_invisible="True"/>
+                                    <field name="is_custodian" column_invisible="True"/>
+                                    <field name="attachment" widget="attachment_preview" filename="attachment_filename"/>
+                                    <field name="state"/>
+                                    <button name="action_approve" type="object"
+                                            string="Approve"
+                                            class="btn-primary"
+                                            invisible="state != 'submitted' or is_custodian == False"/>
+                                    <button name="action_reject" type="object"
+                                            string="Reject"
+                                            class="btn-danger"
+                                            invisible="state != 'submitted' or is_custodian == False"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cash Activities">
+                            <field name="move_ids" readonly="1">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="journal_id"/>
+                                    <field name="ref"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <!-- <page string="Bills"/> -->
+                        <!-- <page string="Petty Cash Auto Replenishment"/> -->
+                        <!-- <page string="Approval Matrix Line"/> -->
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity" optional="show"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_petty_cash" model="ir.actions.act_window">
+        <field name="name">Petty Cash</field>
+        <field name="res_model">petty.cash</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- Menuitem -->
+    <menuitem id="menu_petty_cash_root" name="Petty Cash" sequence="10" web_icon="account_petty_cash,static/description/icon.png"/>
+    <menuitem id="menu_petty_cash" name="Petty Cash Management" parent="menu_petty_cash_root" action="action_petty_cash"/>
+</odoo>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+   <t t-name="batik_stock_real_time.StockRealTimePage">
+        <div class="o_stock_realtime_page p-3">
+            <div class="o_col_xxl_X">
+                <div class="bg-white border-bottom shadow-sm p-4 mb-4 rounded">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+                        <div id="title" class="mb-3 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                    width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                                    class="lucide lucide-building2 text-primary me-2">
+                                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path>
+                                    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path>
+                                    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path>
+                                    <path d="M10 6h4"></path>
+                                    <path d="M10 10h4"></path>
+                                    <path d="M10 14h4"></path>
+                                    <path d="M10 18h4"></path>
+                                </svg>  
+                                <div>
+                                    <h1 class="h4 mb-0">Warehouse Stock Comparison</h1>
+                                    <p class="mb-0 text-muted small">Compare inventory levels across warehouses</p>
+                                    <span class="text-secondary small"><t t-esc="state.address"/></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="logoImg">
+                            <img t-att-src="state.company and state.company.id ? '/logo.png?company=' + state.company.id : '/logo.png'"
+                                class="img-fluid" 
+                                t-att-alt="state.company ? state.company.name : 'Company Logo'"/>
+                        </div>
+                    </div>
+
+                    <div class="text-center mb-2">
+                        <span class="fw-bold text-warning fs-1"><t t-esc="state.clock"/></span>
+                    </div>
+
+                    <div class="text-end filter">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="stock_filter" value="all" checked="checked"
+                                t-on-change="onChangeFilter"/>
+                            <label class="form-check-label">All Products</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="stock_filter" value="available"
+                                t-on-change="onChangeFilter"/>
+                            <label class="form-check-label">Empty Stock</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="stock-list" class="row g-4 p-2 overflow-y: auto;">
+                    <t t-foreach="state.stockData" t-as="loc" t-key="loc.id">
+                        <div class="col-12 col-md-6 col-lg-0 d-flex">
+                            <div class="location-box card shadow-sm h-100 flex-fill" style="background-color:#fdfdfd;">
+                                <div class="card-body">
+                                    <h5 class="text-center text-warning mb-3" style="font-size:16px;">
+                                        <t t-esc="loc.location"/>
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped table-hover align-middle text-center mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Produk Kode</th>
+                                                    <th>Nama</th>
+                                                    <th>Stok</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="loc.products" t-as="p" t-key="p.code">
+                                                    <tr>
+                                                        <td><t t-esc="p.code"/></td>
+                                                        <td class="text-start"><t t-esc="p.name"/></td>
+                                                        <td>
+                                                            <span><t t-esc="p.qty"/></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>
+

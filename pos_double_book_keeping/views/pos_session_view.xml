@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_view_pos_session_form_double_book_keeping" model="ir.ui.view">
+        <field name="name">inherit.view.pos.session.form.double.book.keeping</field>
+        <field name="model">pos.session</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='show_cash_register']" position="after">
+                <button
+                    name="show_book_keeping"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-bars"
+                    invisible="not cash_control"
+                    groups="pos_double_book_keeping.group_pos_double_book_keeping_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Book Keeping</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

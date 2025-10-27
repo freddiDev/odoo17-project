@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_loyalty_reward_view_form_batik" model="ir.ui.view">
+        <field name="name">inherit.loyalty.reward.view.form.batik</field>
+        <field name="model">loyalty.reward</field>
+        <field name="inherit_id" ref="loyalty.loyalty_reward_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="replace">
+                <form class="loyalty-reward-form">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <separator string="Conditions" colspan="2"/>
+                                <field name="member_type_ids" class="form-control" widget="many2many_tags" required="1"/>
+                                <field name="reward_type" readonly="1"/>
+                            </group>
+                            <group>
+                                <separator string="" colspan="2"/>
+                                <field name="required_points" class="form-control" string="Points" invisible="reward_type == 'product'"/>
+                                <field name="discount_max_amount" class="form-control" string="Amount"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="gift_product" string="Gift Prodcuts" invisible="reward_type != 'product'">
+                                <field name="loyalry_reward_product_ids">
+                                    <tree editable="bottom">
+                                        <field name="product_id"/>
+                                        <field name="default_code"/>
+                                        <field name="lst_price" />
+                                        <field name="uom_id" />
+                                        <field name="quantity"/>
+                                        <field name="reedem_points" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+                
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_loyalty_reward_view_kanban_batik" model="ir.ui.view">
+        <field name="name">inherit.loyalty.reward.view.kanban.batik</field>
+        <field name="model">loyalty.reward</field>
+        <field name="inherit_id" ref="loyalty.loyalty_reward_view_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//t[@t-if='record.discount']" position="replace">
+                 <t t-if="record.discount">
+                    <a>
+                        Discount
+                        <t t-if="record.discount_max_amount.raw_value &gt; 0">
+                            ( Amount <field name="discount_max_amount"/> )
+                        </t>
+                    </a>
+                </t>
+            </xpath>
+            <xpath expr="//div[hasclass('o_loyalty_kanban_card_right')]" position="replace">
+                <div class="o_loyalty_kanban_card_right">
+                    <p class="text-muted">
+                        <span t-if="record.reward_type.raw_value === 'discount'" class="fw-bold text-decoration-underline">In exchange of</span>
+                        <br/>
+                        <t t-if="record.clear_wallet.raw_value">
+                            all <field name="point_name"/> (if at least <field name="required_points"/> <field name="point_name"/>)
+                        </t>
+                        <t t-if="record.reward_type.raw_value === 'discount'">
+                            <field name="required_points"/> <field name="point_name"/>
+                        </t>
+                    </p>
+                </div>
+                
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

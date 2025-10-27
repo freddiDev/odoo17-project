@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_purchase_order_view_tree_leadtime" model="ir.ui.view">
+        <field name="name">purchase.order.view.tree.leadtime.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree/field[@name='partner_id']" position="after">
+                <field name="leadtime_status"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="purchase_order_form_inherit_batik" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.batik</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_confirm']" position="before">
+                <button name="action_purchase_ref_wiz" 
+                    type="object" string="Purchase Reference" 
+                    class="oe_highlight" 
+                    context="{'default_purchase_id': id}" 
+                    invisible="state not in ('purchase', 'done')"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_ref']" position="after">
+                <field name="warehouse_id"/>
+                <field name="po_reference_id" readonly="1" invisible="not po_reference_id"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='effective_date']" position="after">
+                <field name="received_leadtime" />
+                <field name="leadtime_status"/>
+            </xpath>
+            
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="purchase_remarks"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="before">
+                <field name="purchase_revision_id" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            
+            <xpath expr="//field[@name='fiscal_position_id']" position="after">
+                <field name="purchase_total_qty"/>
+                <field name="leadtime_plan" readonly="1"/>
+                <field name="leadtime_actual" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="before">
+                <field name="cv_id" readonly="1" force_save="1"/>
+                <field name="product_domain_ids" column_invisible="True"/>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('id', 'in', product_domain_ids)]</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='purchase_total_qty']" position="after">
+                <field name="summary_id" readonly="1" force_save="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

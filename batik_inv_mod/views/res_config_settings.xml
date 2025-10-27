@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the settings view to add a new section under Invoicing -->
+        <record id="view_res_config_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//block[5]" position="after">
+                    <block title="Quality Control" name="quality_control_setting_container">
+                        <setting id="qc_percentage_setting" help="Set the QC Receiving Percentage for incoming goods.">
+                            <field name="qc_percentage"/>
+                            <label for="qc_percentage"/>
+                            <div class="text-muted">
+                                QC Receiving Percentage
+                            </div>
+                        </setting>
+                    </block>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

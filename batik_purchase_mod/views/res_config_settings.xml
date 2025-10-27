@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the settings view to add a new section under Invoicing -->
+        <record id="view_res_config_settings_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.inherit.form</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+                <!-- Targeting the form (or notebook) to add a new section -->
+                <xpath expr="//block[@name='invoicing_settings_container']" position="after">
+                    <h2>Expedition Settings</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box" id="expedition_account">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="expedition_account_id"/>
+                                <div class="text-muted">
+                                    Default Expedition Account
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="expedition_account_id" class="o_light_label" widget="many2one"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box" id="expedition_journal">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="expedition_journal_id"/>
+                                <div class="text-muted">
+                                    Default Expedition Journal
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="expedition_journal_id" class="o_light_label" widget="many2one"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

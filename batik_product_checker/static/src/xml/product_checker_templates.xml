@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="batik_product_checker.ProductCheckerPage" owl="1">
+        <div class="o_container py-5 px-5"  style="overflow-y:auto; max-height:100vh;">
+            <div class="bg-white p-5 rounded shadow-lg">
+                 <div class="d-flex align-items-center mb-4">
+                    <i class="fa fa-search text-primary mr-2 fa-lg"></i>
+                    <h3 class="m-2 font-weight-bold text-dark">Product Availability Checker</h3>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Product Code</label>
+                        <input t-model="state.ref" id="reference" placeholder="e.g. PRD123" class="form-control"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Motif</label>
+                        <input t-model="state.motif" id="motif" placeholder="Motif" class="form-control"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Size</label>
+                        <input t-model="state.ukuran" id="ukuran" placeholder="Size" class="form-control"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted">Quantity</label>
+                        <input t-model="state.jumlah" id="jumlah" type="number" placeholder="Quantity" class="form-control"/>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-2 ml-auto">
+                        <button class="btn btn-gradient-primary w-40 d-flex align-items-center justify-content-center px-4 py-2" t-on-click="onSearch">
+                             <i class="fa fa-search mr- px-1"></i> Find Item
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fa fa-list text-success mr-2"></i>
+                    <h5 class="m-2 font-weight-bold text-dark">Search Results</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped border rounded">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th><i class="fa fa-arrows mr-1"></i> Product</th>
+                                <th><i class="fa fa-cubes mr-1"></i> Quantity</th>
+                                <th><i class="fa fa-map-marker mr-1"></i> Location</th>
+                                <th><i class="fa fa-square mr-1"></i> Warehouse</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="state.allData.length === 0">
+                                <tr><td colspan="5" class="text-center text-muted">No products found.</td></tr>
+                            </t>
+                            <t t-foreach="paginatedData" t-as="item" t-key="item.id">
+                                <tr>
+                                    <td>
+                                        <img t-att-src="item.image_url" alt="Product Image"
+                                            style="width:120px;height:140px;object-fit:cover;margin-right:10px;border-radius:0.5rem"/>
+                                        <t t-esc="item.product"/>
+                                    </td>
+                                    <td><t t-esc="item.qty"/></td>
+                                    <td><t t-esc="item.location"/></td>
+                                    <td><t t-esc="item.warehouse"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-center" t-if="totalPages &gt; 1">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item" t-att-class="{'disabled': state.currentPage === 1}">
+                                <a class="page-link" href="#" t-on-click.prevent="prevPage">← Prev</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    <t t-esc="state.currentPage"/> of <t t-esc="totalPages"/>
+                                </span>
+                            </li>
+                            <li class="page-item" t-att-class="{'disabled': state.currentPage === totalPages}">
+                                <a class="page-link" href="#" t-on-click.prevent="nextPage">Next →</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
+
+

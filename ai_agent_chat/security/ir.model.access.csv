@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ai_agent_conversation_user,ai.agent.conversation.user,model_ai_agent_conversation,base.group_user,1,1,1,0
+access_ai_agent_conversation_manager,ai.agent.conversation.manager,model_ai_agent_conversation,base.group_system,1,1,1,1

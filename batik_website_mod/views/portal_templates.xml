@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <template id="portal_my_details_inherit_batik" inherit_id="portal.portal_my_details">
+            <xpath expr="//button[@type='submit']" position="before">
+                <div class="col-lg-12 mb-4" style="margin-top: 30px;background-color: #e4e4e4;padding: 25px;border-radius: 1em;">
+                    <h4>Legal Documents</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="file_ktp">KTP</label><br/>
+                            <t t-if="partner.file_ktp">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_ktp&amp;download=true' % partner.id" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_ktp"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_npwp">NPWP</label><br/>
+                            <t t-if="partner.file_npwp">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_npwp&amp;download=true' % partner.id" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.filename_npwp"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_sktkp">S K T K P</label><br/>
+                            <t t-if="partner.file_sktkp">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_sktkp&amp;download=true' % partner.id" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_sktkp"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_account_number">Account Number</label><br/>
+                            <t t-if="partner.file_account_number">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_account_number&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_account_number"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_others">Document Lainnya</label><br/>
+                            <t t-if="partner.file_others">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_others&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_others"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_nib_number">N I B</label><br/>
+                            <t t-if="partner.file_nib_number">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_nib_number&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_nib_number"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_surat_pernyataan_kuasa">Surat Pernyataan dan Kuasa</label><br/>
+                            <t t-if="partner.file_surat_pernyataan_kuasa">
+                                <div style="width:250px;">
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_surat_pernyataan_kuasa&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_surat_kuasa"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_akta">Akta Perubahan Pengurus Terakhir</label><br/>
+                            <t t-if="partner.file_akta">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_akta&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_akta"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_ahu">Surat Persetujuan Direktur AHU</label><br/>
+                            <t t-if="partner.file_ahu">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_ahu&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_ahu"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="file_sks">Surat Persetujuan Kerja Sama</label><br/>
+                            <t t-if="partner.file_sks">
+                                <div>
+                                    <a style="width:250px;" t-att-href="'/web/content?model=res.partner&amp;id=%s&amp;field=file_sks&amp;download=true' % partner.id" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-download"></i> <t t-esc="partner.file_name_sks"/>
+                                    </a>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="btn btn-sm btn-danger" style="width:250px;">
+                                    <i class="fa fa-upload"></i> <span>Data not found </span>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+    <template id="portal_my_home_vendor_logistic" name="Show Vendor Logistic" customize_show="True" inherit_id="portal.portal_my_home" priority="25">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/batik_website_mod/static/src/img/logistic.svg'"/>
+                <t t-set="title">Vendor Logistic</t>
+                <t t-set="text">Follow your delivery logistic.</t>
+                <t t-set="url" t-value="'/my/vendor_logistic'"/>
+                <t t-set="placeholder_count" t-value="'vl_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_qc_report" name="Show qc report" customize_show="True" inherit_id="portal.portal_my_home" priority="26">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/batik_website_mod/static/src/img/quality.svg'"/>
+                <t t-set="title">Vendor QC Report</t>
+                <t t-set="text">Track and review quality for your products.</t>
+                <t t-set="url" t-value="'/my/qc_report'"/>
+                <t t-set="placeholder_count" t-value="'qc_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="picking_portal_my_home" name="Portal My Home : picking entries" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="picking_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Goods Receipt</t>
+                <t t-set="url" t-value="'/my/pickings'" />
+                <t t-set="count" t-value="picking_count" />
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ir_cron_reset_sequence_daily_po" model="ir.cron">
+        <field name="name">Reset Daily Sequence PO</field>
+        <field name="model_id" ref="base.model_ir_sequence"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model.reset_daily_sequence_po()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=0, minute=1, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+     <record id="ir_cron_reset_sequence_daily_rfq" model="ir.cron">
+        <field name="name">Reset Daily Sequence RFQ</field>
+        <field name="model_id" ref="base.model_ir_sequence"/>
+        <field name="state">code</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="code">model.reset_daily_sequence_rfq()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=0, minute=1, second=0).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+
+</odoo>

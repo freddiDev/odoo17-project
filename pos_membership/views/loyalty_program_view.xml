@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_loyalty_program_view_tree" model="ir.ui.view">
+        <field name="name">inherit.loyalty.program.view.tree</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="loyalty.loyalty_program_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="replace" js_class="loyalty_program_list_view">
+                <tree string="Loyalty Programs">
+                    <field name="name"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="warehouse_ids" widget="many2many_tags"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                </tree>
+                
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_loyalty_program_view_form_batik" model="ir.ui.view">
+        <field name="name">inherit.loyalty.program.view.form.batik</field>
+        <field name="model">loyalty.program</field>
+        <field name="inherit_id" ref="loyalty.loyalty_program_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="replace">
+                <form string="Loyalty Programs">
+                    <sheet>
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <field name="active" invisible="1"/>
+                        <field name="applies_on" invisible="1"/>
+                        <field name="currency_symbol" invisible="1"/>
+                        
+                        <div class="oe_title">
+                            <label for="name" string="Program Name"/>
+                            <h1>
+                                <field name="name" placeholder="e.g. 10% discount on laptops" required="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_from" class='form-control' required="1"/>
+                                <field name="date_to" class='form-control'/>
+                                <field name="company_id" class='form-control' readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="pos_loyalty_type" class='form-control'/>
+                                <field name="warehouse_ids" widget="many2many_tags" class='form-control'/>
+                            </group>    
+                            <notebook>
+                                <page string="Rules &amp; Rewards" name="rules_rewards" invisible="pos_loyalty_type == 'reedem'">
+                                    <group>
+                                        <group>
+                                            <field name="rule_ids" colspan="2" mode="kanban" nolabel="1" add-label="Add a rule"
+                                                class="o_loyalty_kanban_inline" 
+                                                widget="loyalty_one2many" 
+                                                context="{'currency_symbol': currency_symbol}"/>
+                                        </group>
+                                    </group>
+                                </page>
+                                <page string="Rewards Redeem Rules" name="rewards" invisible="pos_loyalty_type != 'reedem'">
+                                    <group>
+                                        <group groups="base.group_no_one">
+                                            <field name="reward_ids" colspan="2" mode="kanban" nolabel="1" add-label="Add a reward"
+                                            class="o_loyalty_kanban_inline" 
+                                            widget="loyalty_one2many" 
+                                            context="{'currency_symbol': currency_symbol, 'default_reward_type': 'discount'}"/>
+                                        </group>
+                                    </group>
+                                </page>
+                                <page string="Product Redeem Rules" name="product_redeem" invisible="pos_loyalty_type != 'reedem'">
+                                    <group>
+                                        <group groups="base.group_no_one">
+                                            <field name="reward_product_ids" colspan="2" mode="kanban" nolabel="1" add-label="Add a reward"
+                                            class="o_loyalty_kanban_inline" 
+                                            widget="loyalty_one2many" 
+                                            context="{'currency_symbol': currency_symbol, 'default_reward_type': 'product'}"/>
+                                        </group>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

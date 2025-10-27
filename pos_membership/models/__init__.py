@@ -1,0 +1,5 @@
+from . import res_partner
+from . import loyalty_program
+from . import member_type
+from . import loyalty_reward
+from . import loyalty_reward_product

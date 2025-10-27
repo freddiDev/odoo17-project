@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reordering_rules_wizard" model="ir.ui.view">
+        <field name="name">Reordering Rules Wiz</field>
+        <field name="model">reordering.rules.wiz</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+                <p>
+                The stock will be reserved for operations waiting for availability and the reordering rules will be triggered.
+                </p>
+                <group>
+                    <group>
+                        <field name="date" readonly="1"/>
+                        <field name="partner_id" />
+                        <field name="leadtime_status" readonly="1" force_save="1"/>
+                    </group>
+                    <group>
+                        <field name="user_id" readonly="1"/>
+                        <field name="warehouse_ids" 
+                            widget="many2many_tags_dynamic_reordering" 
+                            class="o_field_many2manytags"
+                            readonly="is_show"/>
+                        <field name="is_show" invisible="1"/>
+                    </group>
+                </group>
+                <div class="o_notebook_headers">
+                    <ul class="nav nav-tabs" style="width:100%;">
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#" class="nav-link active" role="tab">Datas</a>
+                        </li>
+                    </ul>
+                    <div class="custom_table_container">
+                        <table class="custom_table" style="color:black;">
+                            <thead>
+                                <tr id="dynamic_table_header_reordering">
+                                    <th>No</th>
+                                    <th>Product</th>
+                                    <th>Receiving Avg</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dynamic_table_body_reordering">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <footer>
+                    <button name="procure_calculation" 
+                        string="Generate" 
+                        type="object" 
+                        class="btn-primary"
+                        invisible="is_show"/>
+                    <button name="action_create_rfq" 
+                        string="Create RFQ" 
+                        type="object" 
+                        class="btn-primary" 
+                        invisible="not is_show"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reordering_rules_wiz" model="ir.actions.act_window">
+        <field name="name">Reordering Rules</field>
+        <field name="res_model">reordering.rules.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem action="action_reordering_rules_wiz" id="menu_reordering_rules_wiz" parent="stock.menu_stock_warehouse_mgmt" sequence="136"/>
+
+
+</odoo>

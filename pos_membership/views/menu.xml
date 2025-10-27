@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="membership_menu"
+        name="Membership"
+        parent="point_of_sale.menu_point_root"
+        sequence="10"/>
+
+        <menuitem
+            id="membership_menu_members"
+            name="Members"
+            action="pos_membership.action_pos_members"
+            parent="membership_menu"
+            sequence="1"/>
+        
+        <menuitem
+            id="pos_loyalty.menu_discount_loyalty_type_config"
+            action="loyalty.loyalty_program_discount_loyalty_action"
+            name="Loyalty Programs"
+            parent="membership_menu"
+            groups="point_of_sale.group_pos_manager"
+            sequence="2"
+        />
+
+        <menuitem
+            id="pos_loyalty.menu_gift_ewallet_type_config"
+            action="loyalty.loyalty_program_gift_ewallet_action"
+            name="Gift cards &amp; eWallet"
+            parent="point_of_sale.pos_config_menu_catalog"
+            groups="point_of_sale.group_pos_manager"
+            sequence="92"
+            active="false"
+        />
+
+        <menuitem
+            id="membership_type_menu"
+            name="Member Types"
+            action="pos_membership.action_pos_membership_type"
+            parent="membership_menu"
+            sequence="3"/>
+
+</odoo>

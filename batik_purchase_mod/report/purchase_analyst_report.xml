@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_purchase_analyst_pdf" name="Purchase Analyst PDF">
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <h2 style="text-align: center;font-weight:bold;">Purchase Analyst Report</h2>
+                <table class="table table-sm table-bordered" border="1px solid">
+                    <thead style="font-weight:bold;">
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Product</th>
+                            <th>Product Code</th>
+                            <th>Qty PO</th>
+                            <th>Qty Sale</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="docs" t-as="doc">
+                            <td><span t-field="doc.partner_id.name"/></td>
+                            <td><span t-field="doc.product_id.name"/></td>
+                            <td><span t-field="doc.product_code"/></td>
+                            <td><span t-field="doc.qty_po"/></td>
+                            <td><span t-field="doc.qty_sale"/></td>
+                            <td><span t-field="doc.price" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                            <td><span t-field="doc.subtotal" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <record id="paperformat_purchase_analyst" model="report.paperformat">
+        <field name="name">Purchase Analyst Paperformat</field>
+        <field name="default" eval="True"/>
+        <field name="format">custom</field>
+        <field name="page_height">297</field>
+        <field name="page_width">210</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">23</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">205</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- report PDF -->
+    <record id="action_purchase_analyst_printout_pdf" model="ir.actions.report">
+        <field name="name">Print PDF</field>
+        <field name="model">purchase.analyst.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batik_purchase_mod.report_purchase_analyst_pdf</field>
+        <field name="report_file">batik_purchase_mod.report_purchase_analyst_pdf</field>
+        <field name="print_report_name">'Purchase Analyst - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_purchase_analyst_report"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_purchase_analyst"/>
+    </record> 
+
+    <!-- Report XLS -->
+    <record id="action_purchase_analyst_printout_xls" model="ir.actions.server">
+        <field name="name">Print XLS</field>
+        <field name="model_id" ref="model_purchase_analyst_report"/>
+        <field name="binding_model_id" ref="model_purchase_analyst_report"/>
+        <field name="binding_type">report</field>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+active_ids = env.context.get('active_ids', [])
+action = {
+    'type': 'ir.actions.act_url',
+    'url': '/report/xls/purchase_analyst?ids=%s' % ','.join(map(str, active_ids)),
+    'target': 'self',
+}
+        ]]></field>
+    </record>
+
+</odoo>

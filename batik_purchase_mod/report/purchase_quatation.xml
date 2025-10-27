@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+     <record id="purchase.report_purchase_quotation" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <template id="batik_purchase_mod.report_purchase_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="batik_general_mod.template_exclusive_main" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+    
+    <record id="action_purchase_report" model="ir.actions.report">
+        <field name="name">Purchase Order</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batik_purchase_mod.report_purchase_order</field>
+        <field name="report_file">batik_purchase_mod.report_purchase_order</field>
+        <field name="print_report_name">'Purchase Order - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="templates_company_details">
+        <span style="text-transform:capitalize; padding:0px; margin:0; color: #51565b;font-weight:bold;">
+            <strong>Adress</strong>
+        </span>
+        <div style="color: #51565b;">
+            <span t-esc="company._get_street(o.source_warehouse_id.partner_id)"/>
+            <br/>
+            <span t-esc="company._get_address_details(o.source_warehouse_id.partner_id)"/>
+            <br/>
+        </div>
+    </template>
+
+
+    <template id="template_delivery_detail" name="delivery_details">
+        <table class="table table-sm table-bordered mt16 mb16" 
+            style="width:100%;
+                    border-collapse:collapse; 
+                    background-color:black;
+                    color:#d3d3d3;">
+            <thead>
+                <tr style="background-color:black; color:#d3d3d3;">   
+                    <th style="text-align:left; padding:8px;">ITR Reference</th>
+                    <th style="text-align:left; padding:8px;">Source Document</th>
+                    <th style="text-align:left; padding:8px;">User Receiving</th>
+                </tr>
+            </thead>
+            <tbody>
+                <td style="text-align:left; padding:8px;" t-esc="o.name"/>
+                <td style="text-align:left; padding:8px;" t-esc="o.name"/>
+                <td style="text-align:left; padding:8px;" t-esc="o.user_id.name"/>
+            </tbody>
+
+            <thead>
+                <tr style="background-color:black; color:#d3d3d3;">   
+                    <th style="text-align:left; padding:8px;">Source Location</th>
+                    <th style="text-align:left; padding:8px">Destination Location</th>
+                    <th style="text-align:left; padding:8px;">Scheduled Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <td style="text-align:left; padding:8px;" t-esc="o.stock_location_id.display_name"/>
+                <td style="text-align:left; padding:8px;" t-esc="o.dest_location_id.display_name"/>
+                <td style="text-align:left; padding:8px;" t-esc="o.date"/>
+            </tbody>
+        </table>
+    </template>
+
+    <template id="template_item_details" name="item_details">
+        <table class="table table-sm table-bordered mt16 mb16"
+            style="width:100%;
+                border-collapse:collapse;
+                border: 1px solid black;">
+            <thead>
+                <tr style="background-color:black; color:#d3d3d3;">   
+                    <th style="text-align:left; padding:8px;">Product</th>
+                    <th style="text-align:left; padding:8px;">Description</th>
+                    <th style="text-align:left; padding:8px;">Quantity</th>
+                    <th style="text-align:left; padding:8px;">UoM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <t t-foreach="o.transfer_line_ids" t-as="line">
+                    <tr>
+                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.product_code"/>
+                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.product_id.display_name"/>
+                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.transfer_quantity"/>
+                        <td style="text-align:left; padding:8px; border: 1px solid black;" t-esc="line.uom_id.name"/>
+                    </tr>
+                </t>
+            </tbody>
+        </table>
+    </template>
+
+    <template id="batik_inv_mod.report_interwarehouse_transfer_document">
+        <t t-call="web.html_container">
+            <t t-as="o" t-foreach="docs">
+                <div class="page">
+                    <div class="header" style="border: none !important;">
+                        <table style="border-collapse: collapse; border: none; width: 100%;">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <center>
+                                            <table style="border-collapse: collapse; width: 100%;">
+                                                <tr>
+                                                    <td align="left" colspan="2" style="color:#4D4D4F; padding:0 0px;" valign="top">
+                                                        <table style="border-collapse: collapse; width: 100%;">
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <img style="max-height: 80px; margin-top: 5%;" t-att-src="image_data_uri(company.logo)" t-if="company.logo"/>
+                                                                </td>
+                                                                <td align="center" style="padding: 0 0 25px 0; line-height:16px; padding-top:5px;color:white;" valign="top" width="570">
+                                                                    <t t-call="batik_inv_mod.templates_company_details"/>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class='delivery_details'>
+                        <t t-call="batik_inv_mod.template_delivery_detail"/>
+                    </div>
+                    <br/>
+                    <div class='item_details'>
+                        <t t-call="batik_inv_mod.template_item_details"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_interwarehouse_report" model="ir.actions.report">
+        <field name="name">Interwarehouse</field>
+        <field name="model">interwarehouse.transfer</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batik_inv_mod.report_interwarehouse_transfer_document</field>
+        <field name="report_file">batik_inv_mod.report_interwarehouse_transfer_document</field>
+        <field name="print_report_name">'Interwarehouse - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_interwarehouse_transfer"/>
+        <field name="binding_type">report</field>
+    </record> 
+
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="RetailOrderReceiptCustomTemplate" t-inherit="equip3_pos_masterdata.RetailOrderReceiptCustomTemplate" t-inherit-mode="extension" owl="1">
+        <xpath expr="//p[hasclass('receipt_cashier')]" position="after">
+            <t t-if="receipt.printed_receipt_counter &gt; 0">
+                <p style="margin: 3px 0;" class="receipt_printed_counter">Reprint count : <t t-esc="receipt.printed_receipt_counter"/></p>
+            </t>
+            <t t-else="">
+                <t t-if="state">
+                    <t t-if="state.receiptPrintedCounter &gt; 0">
+                        <p style="margin: 3px 0;" class="receipt_printed_counter">Reprint count : <t t-esc="state.receiptPrintedCounter"/></p>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </t>
+</templates>

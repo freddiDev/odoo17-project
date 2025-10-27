@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_leadtime_report_result_tree" model="ir.ui.view">
+        <field name="name">leadtime.report.result.tree</field>
+        <field name="model">leadtime.report.result</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="vendor_id"/>
+                <field name="leadtime_plan"/>
+                <field name="leadtime_actual"/>
+                <field name="status_leadtime"/>
+                <field name="jumlah_benar"/>
+                <field name="jumlah_salah"/>
+                <field name="rata_rata"/>
+            </tree>
+        </field>
+    </record>
+</odoo>

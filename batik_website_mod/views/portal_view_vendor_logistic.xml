@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_vendor_logistic_breadcrumbs" name="Portal layout: Vendor Logistic breadcrumbs" inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'vendor_logistic'" t-attf-class="breadcrumb-item #{'active ' if not vl else ''}">
+                <a t-if="orders" t-attf-href="/my/vendor_logistic?{{ keep_query() }}">Vendor Logistic</a>
+                <t t-else="">Vendor Logistic</t>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_vendor_logistic" name="Portal Vendor Logistic">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar"/>
+            <t t-if="not orders">
+                <p>There are currently no datas for your account.</p>
+            </t>
+            <t t-if="orders" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Vendor Logistic Number</th>
+                        <th class="text-right"></th>
+                        <th class="text-right"></th>
+                        <th>Create Date</th>
+                        <th class="text-right"> </th>
+                        <th class="text-right"></th>
+                        <th class="text-center"/>
+                        <th class="text-right">Stage</th>
+                    </tr>
+                </thead>
+                <t t-foreach="orders" t-as="order">
+                    <tr>
+                        <td>
+                            <a t-att-href="order.get_portal_url()">
+                                <t t-esc="order.name"/>
+                            </a>
+                        </td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td>
+                            <a t-att-href="order.get_portal_url()">
+                                <t t-esc="order.create_date" t-options="{'widget': 'date'}"/>
+                            </a>
+                        </td>
+                        <td class="text-right"></td>
+                        <td class="text-right"></td>
+                        <td class="text-center">
+                        </td>
+                        <td class="text-right">
+                            <t t-if="order.state == 'draft'">
+                                <span style="padding: 0px;font-size: 10px;width: 51px;" class="btn btn-secondary">Draft</span>
+                            </t>
+                            <t t-if="order.state == 'confirm'">
+                                <span style="padding: 0px;font-size: 10px;width: 51px;" class="btn btn-info">Confirmed</span>
+                            </t>
+                            <t t-if="order.state == 'done'">
+                                <span style="padding: 0px;font-size: 10px;width: 51px;" class="btn btn-success">Done</span>
+                            </t>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_vendor_logistic" name="My Vendor Logistic">
+        <t t-call="portal.portal_layout">
+            <div id="optional_placeholder"></div>
+            <div class="container">
+                <div class="row mt16 o_portal_purchase_sidebar">
+                    <div class="col-lg col-12 justify-content-end w-100">
+                        <div class="card pb-5">
+                            <div class="card-header bg-white pb-1">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <h2 class="font-weight-normal">
+                                            Vendor Logistic
+                                        </h2>
+                                    </div>
+                                    <div class="col-lg-2 text-right" t-if="vl.state == 'draft'">
+                                        <button type="button" class="btn btn-primary" style="padding: 3px 15px 3px 15px">Edit</button>
+                                        <button type="button" class="btn btn-success" style="display: none; padding: 3px 15px 3px 15px">Save</button>
+                                        <button type="button" class="btn btn-danger" style="padding: 3px 15px 3px 15px">Discard</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body" t-att-data-order-id="vl.id">
+                                <div class="d-flex justify-content-between mb-4">
+                                    <div>
+                                        <h2 class="font-weight-normal">
+                                            <span t-field="vl.name"/>
+                                        </h2><br/>
+                                        <strong class="d-block mb-1">Vendor :</strong>
+                                        <t t-if="vl.partner_id">
+                                            <address t-esc="vl.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                        </t>
+                                    </div>
+                                    <div>
+                                        <strong>Date:</strong> <span t-field="vl.create_date" t-options='{"widget": "date"}'/><br/>
+                                    </div>
+                                </div>
+                                <h3 class="font-weight-normal">Logistic Line</h3>
+                                <table class="table table-sm">
+                                    <thead class="bg-100">
+                                        <tr>
+                                            <th>Purchase Order</th>
+                                            <th class="text-center d-none d-sm-table-cell">Expedition</th>
+                                            <th class="text-center d-none d-sm-table-cell">No Resi</th>
+                                            <th class="text-center d-none d-sm-table-cell">Pickup Date</th>
+                                            <th class="text-center d-none d-sm-table-cell">Payment</th>
+                                            <th class="text-center d-none d-sm-table-cell">Amount</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="vl.logistic_line_ids" t-as="line">
+                                            <tr t-att-data-line-id="line.id">
+                                                <td>
+                                                    <span t-esc="line.purchase_order_id.name"/>
+                                                </td>
+                                               <td class="text-center d-none d-sm-table-cell expedition">
+                                                    <span class="expedition-text" t-field="line.expedition_id.expedition_partner_id.name"/>
+                                                    <input type="text" class="expedition-input form-control d-none" 
+                                                        t-att-value="line.expedition_id.expedition_partner_id.name" disabled="disabled"/>
+                                                </td>
+                                                <td class="text-center d-none d-sm-table-cell no-resi">
+                                                    <span class="no-resi-text" t-field="line.no_resi"/>
+                                                    <input type="text" class="no-resi-input form-control d-none" 
+                                                        t-att-value="line.no_resi" disabled="disabled"/>
+                                                </td>
+                                                <td class="text-center d-none d-sm-table-cell pickup-date">
+                                                    <span class="pickup-date-text" t-field="line.pickup_date"/>
+                                                    <input type="date" class="pickup-date-input form-control d-none" 
+                                                        t-att-value="line.pickup_date" disabled="disabled"/>
+                                                </td>
+                                               <td class="text-center d-none d-sm-table-cell payment">
+                                                    <span class="payment-text" t-if="line.expedition_payment_type == 'half'">50 - 50</span>
+                                                    <span class="payment-text" t-if="line.expedition_payment_type == 'vendor'">Full by Vendor</span>
+                                                    <span class="payment-text" t-if="line.expedition_payment_type == 'br'">Full by BR</span>
+                                                    <select class="payment-input form-control d-none" disabled="disabled">
+                                                        <option value="half" t-att-selected="line.expedition_payment_type == 'half' and 'selected' or None">50 - 50</option>
+                                                        <option value="vendor" t-att-selected="line.expedition_payment_type == 'vendor' and 'selected' or None">Full by Vendor</option>
+                                                        <option value="br" t-att-selected="line.expedition_payment_type == 'br' and 'selected' or None">Full by BR</option>
+                                                    </select>
+                                                </td>
+                                                <td class="text-center d-none d-sm-table-cell payment-amount">
+                                                    <span class="payment-amount-text" 
+                                                        t-field="line.expedition_payment_amount" 
+                                                        t-options="{'widget': 'monetary', 'display_currency': line.purchase_order_id.currency_id}"/>
+                                                    <input type="number" id="currency-input" name="currency-input" disabled="disabled" t-att-value="line.expedition_payment_amount"
+                                                        class="payment-amount-input form-control d-none"/>
+                                                </td>
+
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
+ 

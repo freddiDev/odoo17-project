@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="qc_portal_breadcrumbs_extend"
+            inherit_id="portal.portal_breadcrumbs"
+            name="QC Portal: Breadcrumbs Extension">
+    <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+      <li t-if="breadcrumbs" t-foreach="breadcrumbs" t-as="breadcrumb" t-attf-class="breadcrumb-item #{'active' if not breadcrumb.get('url') else ''}">
+        <t t-if="breadcrumb.get('url')">
+          <a t-att-href="breadcrumb['url']"><t t-esc="breadcrumb['name']"/></a>
+        </t>
+        <t t-else="">
+          <t t-esc="breadcrumb['name']"/>
+        </t>
+      </li>
+    </xpath>
+  </template>
+</odoo>

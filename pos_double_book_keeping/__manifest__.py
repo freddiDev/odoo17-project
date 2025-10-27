@@ -1,0 +1,20 @@
+{
+    'name': 'Double Book Keeping for POS',
+    'version': '1.0',
+    'summary': 'Custom POS Module',
+    'description': "Custpm Module to add double book keeping in POS",
+    'author': 'Freddi Tampubolon',
+    'depends': ['base', 'point_of_sale', 'account'],
+    'category': 'Custom',
+    'sequence': 8,
+    'data': [
+        'security/ir.model.access.csv',
+        'security/pos_double_book_keeping_security.xml',
+        'views/pos_session_view.xml',
+        'views/payment_book_view.xml',
+    ],
+    'qweb': [],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}
