@@ -40,4 +40,11 @@
             parent="membership_menu"
             sequence="3"/>
 
+        <menuitem id="pos_membership_points_action_menu"
+            action="pos_membership.pos_membership_points_action"
+            parent="membership_menu"
+            sequence="4"
+        
+    />
+
 </odoo>

@@ -12,6 +12,7 @@
                 <field name="membership_date"/>
                 <field name="is_membership" column_invisible="1"/>
                 <field name="member_type"/>
+                <field name="pos_loyal_point"/>
             </tree>
         </field>
     </record>

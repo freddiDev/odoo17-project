@@ -19,6 +19,7 @@
         'views/loyalty_rule_view.xml',
         'views/loyalty_reward_view.xml',
         'views/member_type_view.xml',
+        'views/pos_loyalty_view.xml',
         'views/menu.xml',
     ],
     'qweb': [],
