@@ -1,2 +1,6 @@
+# File-file bytecode Python
 *.pyc
 __pycache__/
+
+# Jika Anda juga ingin mengabaikan direktori 'venv' (virtual environment)
+# venv/
