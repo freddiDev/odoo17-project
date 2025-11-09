@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Template for customer -->
 <templates id="template">
-    <t t-name="pos_customer_birthday_discount.ActionpadWidget" t-inherit="point_of_sale.ActionpadWidget" t-inherit-mode="extension">
+    <t t-name="pos_membership.ActionpadWidget" t-inherit="point_of_sale.ActionpadWidget" t-inherit-mode="extension">
         <xpath expr="//button[hasclass('set-partner')]" position="replace">
             <button class="button set-partner btn btn-light rounded-0 py-2 flex-shrink-1 fw-bolder"
                     t-on-click="() => this.pos.selectPartner()">

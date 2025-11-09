@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_membership.RewardButtonInvisible"
+       t-inherit="pos_loyalty.RewardButton"
+       t-inherit-mode="extension">
+
+        <xpath expr="//button" position="replace">
+            <t t-if="false">
+                <button class="control-button btn btn-light rounded-0 fw-bolder">
+                    <i class="fa fa-star me-1"></i>
+                    <span>Reward</span>
+                </button>
+            </t>
+        </xpath>
+    </t>
+</templates>

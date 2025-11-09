@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- To inherit settings page -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.redeem.product.pos</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="point_of_sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='pos_pricing_section']" position="inside">
+                <setting help="Adds a button to set a service charge.">
+                    <div class="content-group mt16">
+                        <div class="row">
+                            <label string="Redeem Product" for="pos_redeem_product_id" class="col-lg-3 o_light_label"/>
+                            <field name="pos_redeem_product_id" required="1"/>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

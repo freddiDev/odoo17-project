@@ -15,7 +15,7 @@
                 <field name="product_redeemed_ids" widget="many2many_tags" optional="hide"/>
                 <field name="create_date"/>
                 <field name="end_date"/>
-                <field name="company_id" optional="show"  readonly="1"/>
+                <field name="company_id" optional="hide"  readonly="1"/>
             </tree>
         </field>
     </record>

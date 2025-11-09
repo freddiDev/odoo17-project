@@ -5,14 +5,12 @@ import { patch } from "@web/core/utils/patch";
 
 patch(PartnerListScreen.prototype, {
     get partners() {
-        console.log('modifier---')
         let res;
         if (this.state.query && this.state.query.trim() !== "") {
             res = this.pos.db.search_partner(this.state.query.trim());
         } else {
             res = this.pos.db.get_partners_sorted(1000);
         }
-        console.log(res, 'res----')
         res = res.filter((partner) => partner.is_membership);
 
         res.sort(function (a, b) {
