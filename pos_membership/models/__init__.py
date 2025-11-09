@@ -5,3 +5,4 @@ from . import loyalty_reward
 from . import loyalty_reward_product
 from . import pos_loyalty
 from . import pos_session
+from . import pos_order
