@@ -52,8 +52,6 @@ class PosLoyaltyPoint(models.Model):
                 remaining_point = loyalty.point - abs(loyalty.redeemed_point)
             loyalty.remaining_point = remaining_point
 
-
-
     def set_ready(self):
         return self.write({'state': 'ready'})
 

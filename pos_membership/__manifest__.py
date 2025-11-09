@@ -22,6 +22,14 @@
         'views/pos_loyalty_view.xml',
         'views/menu.xml',
     ],
+    'assets': {
+        'point_of_sale._assets_pos': [
+            'pos_membership/static/src/js/actionpad_patch.js',
+            'pos_membership/static/src/xml/actionpad_template.xml',
+            'pos_membership/static/src/js/partner_list.js'
+        ],
+    },
+
     'qweb': [],
     'installable': True,
     'application': True,

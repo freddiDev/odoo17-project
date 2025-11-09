@@ -47,3 +47,12 @@ class ResPartner(models.Model):
                 elif transaction_type == 'redeem':
                     total_points += loyalty_transaction.point
             partner.pos_loyal_point = total_points
+
+    @api.model
+    def create_from_ui(self, partner):
+        partner_id = super().create_from_ui(partner)
+        partner_rec = self.browse(partner_id)
+        if not partner.get('id') and partner_rec.exists():
+            partner_rec.is_membership = True
+
+        return partner_id
