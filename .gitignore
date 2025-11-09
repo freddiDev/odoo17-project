@@ -1,6 +1,10 @@
-# File-file bytecode Python
+# Python bytecode files
 *.pyc
+
+# Folder cache
 __pycache__/
 
-# Jika Anda juga ingin mengabaikan direktori 'venv' (virtual environment)
+# Lainnya yang mungkin relevan
+# .vscode/
+# .env
 # venv/
