@@ -8,23 +8,26 @@
             </div>
             <div class="modal-body">
                 <div class="product-list-container flex-grow-1 overflow-y-auto" style="height: 400px;">
-                    <div class="product-list d-grid gap-1 p-1">
-                        <article class="flex-column product position-relative btn btn-light d-flex align-items-stretch p-0 m-0 text-start cursor-pointer overflow-hidden transition-base"
+                    <div class="product-list d-grid gap-2 p-2">
+                        <article class="flex-column product position-relative btn btn-light d-flex align-items-stretch p-0 m-0 text-start cursor-pointer overflow-hidden shadow-sm hover-shadow-lg transition-base rounded-lg"
                                  t-foreach="products || []"
                                  t-as="item"
                                  t-key="item.id"
                                  t-att-data-product-id="item.id"
                                  t-on-click="click_on_rr_product">
-                            <div class="product-img" style="width: 100%; height: 100%;">
-                                <img class="w-100" t-att-src="item.rr_image_url" alt="Product image"/>
+                            <div class="position-relative w-100" style="height: 150px;">
+                                <img class="w-100 h-100 object-fit-cover" t-att-src="item.rr_image_url" alt="Product image"/>
+                                <div class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-primary text-white rounded-pill shadow-sm fw-bold small">
+                                    <i class="fa fa-star me-1"></i>
+                                    <t t-esc="item.used_points"/> pts
+                                </div>
                             </div>
-                            <div class="product-content d-flex flex-column justify-content-between h-10 mx-2 py-1">
-                                <span class="price-tag text-primary py-1 fw-bolder">
-                                    <t t-esc="env.utils.formatCurrency(item.lst_price, 'Product Price')"/>
-                                </span>
-                                <div class="overflow-hidden lh-sm fw-bolder product-name">
+                            <div class="product-content d-flex flex-column justify-content-between mx-2 py-2">
+                                <div class="fw-bolder text-dark lh-sm product-name">
                                     <t t-esc="item.display_name"/>
                                 </div>
+                                <span t-if="item.lst_price == 0.0"
+                                      class="text-secondary fw-bold small mt-1">FREE</span>
                             </div>
                         </article>
                     </div>
