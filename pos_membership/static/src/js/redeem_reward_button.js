@@ -5,6 +5,8 @@ import { ProductScreen } from "@point_of_sale/app/screens/product_screen/product
 import { Component } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 import { RedeemRewardPopupWidget } from "@pos_membership/js/RedeemRewardPopupWidget";
+import { ConfirmPopup } from "@point_of_sale/app/utils/confirm_popup/confirm_popup";
+import { _t } from "@web/core/l10n/translation";
 
 export class RedeemRewardButton extends Component {
     static template = "pos_membership.RedeemRewardButton";
@@ -12,38 +14,34 @@ export class RedeemRewardButton extends Component {
     setup() {
         this.pos = usePos();
         this.popup = useService("popup");
+        this.orm = useService("orm");
     }
 
     async onClick() {
-        const selectedOrder = this.pos.get_order();
-        const redeem_product_id = this.pos.config.redeem_product_id;
-
-        if (redeem_product_id) {
-            console.log("Redeem Product IDs:", redeem_product_id);
-
-            // Pastikan array
-            const products = Array.isArray(redeem_product_id) ? redeem_product_id : [redeem_product_id];
-
-            if (products.length === 1) {
-                const product = this.pos.db.get_product_by_id(products[0]);
-                if (product) {
-                    selectedOrder.add_product(product);
-                    this.pos.set_order(selectedOrder);
-                    this.pos.showScreen("ProductScreen");
-                }
-            } else {
-                // Untuk multiple produk
-                const productObjs = [];
-                for (const prdId of products) {
-                    const prd = this.pos.db.get_product_by_id(prdId);
-                    if (prd) {
-                        prd.image_url = `${window.location.origin}/web/binary/image?model=product.product&field=image_medium&id=${prd.id}`;
-                        productObjs.push(prd);
-                    }
-                }
-                await this.popup.add(RedeemRewardPopupWidget, { products: productObjs });
-            }
+        const partner = this.pos.get_order().get_partner();
+        const partner_id = partner ? partner.id : false;
+        const products = await this.orm.call(
+            "pos.session",
+            "get_reward_products",
+            [],
+            { partner_id }  
+        );
+        if (!products.length) {
+            await this.popup.add(ConfirmPopup, {
+                title: _t("No Points and No Reward Products"),
+                body: _t(
+                    "There are no reward products available for redemption."
+                ),
+                confirmText: _t("OK"),
+            });
+            return;
         }
+
+        for (const prd of products) {
+            prd.rr_image_url = `${window.location.origin}${prd.image_url}`;
+        }
+
+        await this.popup.add(RedeemRewardPopupWidget, { products });
     }
 }
 
@@ -51,6 +49,6 @@ ProductScreen.addControlButton({
     component: RedeemRewardButton,
     position: ["before", "SetFiscalPositionButton"],
     condition: function () {
-        return this.pos.config.redeem_product_id;
+        return true;
     },
 });

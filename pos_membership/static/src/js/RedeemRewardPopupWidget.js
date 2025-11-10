@@ -28,9 +28,13 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
 
     click_on_rr_product(event) {
         const product_id = parseInt(event.currentTarget.dataset.productId);
+        const selectedReward = (this.props.products || []).find(p => p.id === product_id);
         const product = this.pos.db.get_product_by_id(product_id);
-        if (product) {
-            this.pos.addProductToCurrentOrder(product);
+        if (product && selectedReward) {
+            const order = this.pos.get_order();
+            const line = order.add_product(product, {
+                price: selectedReward.lst_price,
+            });
         }
         this.pos.showScreen("ProductScreen");
         this.props.close({ confirmed: true });
