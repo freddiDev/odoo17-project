@@ -7,6 +7,21 @@ class PosOrder(models.Model):
 
     plus_point = fields.Float('Plus Point', readonly=True, copy=False)
 
+    def _create_loyalty_redeem(self):
+        for order in self.filtered(lambda o: o.state in ['paid', 'done'] and o.partner_id):
+            redeemed_pts = sum(order.lines.filtered(lambda l: l.is_reward_redeem).mapped('pts'))
+            if redeemed_pts > 0:
+                self.env['pos.loyalty.point'].create({
+                    'partner_id': order.partner_id.id,
+                    'order_id': order.id,
+                    'point': 0,
+                    'redeemed_point': redeemed_pts,
+                    'type': 'redeem',
+                    'company_id': order.company_id.id,
+                    'state': 'ready',
+                    'description': _('Redeemed loyalty points from POS Order %s') % order.name,
+                })
+    
     def _create_loyalty_point(self):
         for order in self.filtered(lambda o: o.state in ['paid', 'done'] and o.partner_id and o.partner_id.is_membership):
             partner = order.partner_id
@@ -45,11 +60,5 @@ class PosOrder(models.Model):
     def action_pos_order_paid(self):
         res = super(PosOrder, self).action_pos_order_paid()
         self._create_loyalty_point()
+        self._create_loyalty_redeem()
         return res
-
-
-class PosOrderLine(models.Model):
-    _inherit = 'pos.order.line'
-
-    is_reward_redeem = fields.Boolean(string='Is Reward Redeem', copy=False)
-    pts = fields.Integer(string='Redeem Points', default=0, copy=False)
