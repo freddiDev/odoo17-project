@@ -46,3 +46,10 @@ class PosOrder(models.Model):
         res = super(PosOrder, self).action_pos_order_paid()
         self._create_loyalty_point()
         return res
+
+
+class PosOrderLine(models.Model):
+    _inherit = 'pos.order.line'
+
+    is_reward_redeem = fields.Boolean(string='Is Reward Redeem', copy=False)
+    pts = fields.Integer(string='Redeem Points', default=0, copy=False)
