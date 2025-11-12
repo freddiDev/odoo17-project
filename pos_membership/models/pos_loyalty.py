@@ -44,6 +44,12 @@ class PosLoyaltyPoint(models.Model):
     source_loyalty_point_id = fields.Many2one('pos.loyalty.point','Source Loyalty Point',copy=False)
     apply_to = fields.Selection(related='loyalty_id.pos_loyalty_type')
 
+    def cron_check_expired_points(self):
+        today = fields.Datetime.now()
+        points_to_expire = self.search([('state', '=', 'ready'), ('type', '=', 'plus'), ('end_date', '<', today)])
+        points_to_expire.write({'state': 'expired'})
+        return True
+
     def _compute_remaining_point(self):
         for loyalty in self:
             remaining_point = 0
@@ -56,19 +62,13 @@ class PosLoyaltyPoint(models.Model):
         return self.write({'state': 'ready'})
 
     def set_redeem_in_plus_point(self, total_point_cut):
-        # add point check is not None
         point_to_redeem = abs(total_point_cut) if total_point_cut is not None else 0.0
         
         for point_plus in self:
-            # Redeemed Point is (-) amount, if we - then it will plus not minus
             plus_point_left = point_plus.point - abs(point_plus.redeemed_point)
             plus_point_redeemed = abs(point_plus.redeemed_point)
-
-            # If no poin left, continue
             if plus_point_left <= 0:
                 continue
-
-            # available point on the record
             point_residual = (point_plus.point or 0.0) - (point_plus.redeemed_point or 0.0)
 
             redeem_now = min(point_residual, point_to_redeem or 0.0)
@@ -82,14 +82,12 @@ class PosLoyaltyPoint(models.Model):
             if is_full_redemption:
                 point_plus.write({
                     'redeemed_point': plus_point_left,
-                    # 'source_loyalty_point_id': point_plus.id
                 })
                 point_to_redeem -= plus_point_left
                 continue
 
             point_plus.write({
                 'redeemed_point': point_to_redeem + plus_point_redeemed,
-                # 'source_loyalty_point_id': point_plus.id
             })
             point_to_redeem -= point_to_redeem
 

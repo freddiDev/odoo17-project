@@ -14,6 +14,7 @@
     'sequence': 8,
     'data': [
         'security/ir.model.access.csv',
+        'data/cron.xml',
         'views/res_partner_view.xml',
         'views/loyalty_program_view.xml',
         'views/loyalty_rule_view.xml',

@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 import math
+from datetime import timedelta, datetime
 
 
 class PosOrder(models.Model):
@@ -25,7 +26,6 @@ class PosOrder(models.Model):
     def _create_loyalty_point(self):
         for order in self.filtered(lambda o: o.state in ['paid', 'done'] and o.partner_id and o.partner_id.is_membership):
             partner = order.partner_id
-
             if partner.member_type != 'point' or not partner.member_type_id:
                 continue
 
@@ -45,6 +45,8 @@ class PosOrder(models.Model):
             earned_point = math.ceil(order.amount_total / min_amount) * reward_per_amount
             if earned_point <= 0:
                 continue
+
+            end_date = fields.Datetime.now() + timedelta(days=rule.program_id.expired_days)
             self.env['pos.loyalty.point'].create({
                 'partner_id': partner.id,
                 'order_id': order.id,
@@ -54,6 +56,7 @@ class PosOrder(models.Model):
                 'state': 'ready',
                 'description': _('Loyalty point from POS Order %s') % order.name,
                 'loyalty_id': rule.program_id.id,
+                'end_date':end_date
             })
             order.plus_point = earned_point
 

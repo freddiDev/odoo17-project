@@ -9,6 +9,7 @@
                 <field name="partner_id"/>
                 <field name="member_phone"/>
                 <field name="point"/>
+                <field name="redeemed_point"/>
                 <field name="order_id" optional="hide"/>
                 <field name="type" optional="show"/>
                 <field name="remaining_point" optional="show"/>

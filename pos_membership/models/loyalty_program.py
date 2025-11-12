@@ -8,7 +8,7 @@ class LoyaltyProgram(models.Model):
         ('reedem', 'Reedem'),],
         default='point', required=True,
     )
-
+    expired_days = fields.Integer('Expired Days', default=30, help='Number of days after point creation when it will expire')
     warehouse_ids = fields.Many2many(
         'stock.warehouse', string='Warehouse',
         help='Warehouse used to manage the stock of loyalty products.',

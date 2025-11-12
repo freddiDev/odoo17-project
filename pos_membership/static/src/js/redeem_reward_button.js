@@ -23,8 +23,8 @@ export class RedeemRewardButton extends Component {
         const products = await this.orm.call(
             "pos.session",
             "get_reward_products",
-            [],
-            { partner_id }  
+            [this.pos.pos_session.id],
+            { partner_id }
         );
         if (!products.length) {
             await this.popup.add(ConfirmPopup, {

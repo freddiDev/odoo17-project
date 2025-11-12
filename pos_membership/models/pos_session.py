@@ -30,17 +30,20 @@ class PosSession(models.Model):
         return result
 
     @api.model
-    def get_reward_products(self, partner_id=False):
+    def get_reward_products(self, pos_session=False, partner_id=False):
         partner = self.env['res.partner'].browse(partner_id) if partner_id else None
-        config = self.env['pos.config'].search([], limit=1)
+        session = self.env['pos.session'].browse(pos_session) if pos_session else self.env['pos.session'].browse(self.env.context.get('pos_session_id'))
+        config = session.config_id or self.env['pos.config'].search([], limit=1)
         result_products = []
         if not partner:
             return result_products
+
         programs = self.env['loyalty.program'].search([
             ('pos_loyalty_type', '=', 'reedem'),
             ('active', '=', True),
         ])
         remaining_points = int(partner.pos_loyal_point or 0)
+
         for program in programs:
             product_rewards = self.env['loyalty.reward'].search([
                 ('member_type_ids', 'in', partner.member_type_id.id if partner and partner.member_type_id else []),
@@ -66,6 +69,7 @@ class PosSession(models.Model):
                         'image_url': f"/web/image?model=product.product&id={product.id}&field=image_128",
                     })
                     remaining_points -= rp
+
         for program in programs:
             discount_rewards = self.env['loyalty.reward'].search([
                 ('member_type_ids', 'in', partner.member_type_id.id if partner and partner.member_type_id else []),
@@ -88,6 +92,7 @@ class PosSession(models.Model):
                             'image_url': f"/web/image?model=product.product&id={redeem_product.id}&field=image_128",
                         })
                     remaining_points = 0
+
         return result_products
 
 
