@@ -65,3 +65,11 @@ class PosOrder(models.Model):
         self._create_loyalty_point()
         self._create_loyalty_redeem()
         return res
+
+class PosOrderLine(models.Model):
+    _inherit = 'pos.order.line'
+
+    pts = fields.Float('Used Points')
+    is_reward_redeem = fields.Boolean('Reward Redeem')
+
+
