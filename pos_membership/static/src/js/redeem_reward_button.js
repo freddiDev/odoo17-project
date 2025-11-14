@@ -20,35 +20,46 @@ export class RedeemRewardButton extends Component {
     async onClick() {
         const partner = this.pos.get_order().get_partner();
         const partner_id = partner ? partner.id : false;
-        const products = await this.orm.call(
+
+        // call backend
+        const result = await this.orm.call(
             "pos.session",
             "get_reward_products",
             [this.pos.pos_session.id],
             { partner_id }
         );
-        if (!products.length) {
+
+        // Normalize backend result that is expected to be an object:
+        // { product_rewards: [...], discount_rewards: [...] }
+        const productRewards = Array.isArray(result?.product_rewards)
+            ? result.product_rewards
+            : Object.values(result?.product_rewards || {});
+
+        const discountRewards = Array.isArray(result?.discount_rewards)
+            ? result.discount_rewards
+            : Object.values(result?.discount_rewards || {});
+
+        // If both empty -> show message
+        if ((!productRewards || productRewards.length === 0) &&
+            (!discountRewards || discountRewards.length === 0)) {
             await this.popup.add(ConfirmPopup, {
-                title: _t("No Points and No Reward Products"),
-                body: _t(
-                    "There are no reward products available for redemption."
-                ),
+                title: _t("No Rewards Available"),
+                body: _t("Tidak ada reward maupun redeem points."),
                 confirmText: _t("OK"),
             });
             return;
         }
 
-        for (const prd of products) {
-            prd.rr_image_url = `${window.location.origin}${prd.image_url}`;
-        }
-
-        await this.popup.add(RedeemRewardPopupWidget, { products });
+        // Pass both lists to single popup which will show categories first
+        await this.popup.add(RedeemRewardPopupWidget, {
+            product_rewards: productRewards,
+            discount_rewards: discountRewards,
+        });
     }
 }
 
 ProductScreen.addControlButton({
     component: RedeemRewardButton,
     position: ["before", "SetFiscalPositionButton"],
-    condition: function () {
-        return true;
-    },
+    condition: () => true,
 });
