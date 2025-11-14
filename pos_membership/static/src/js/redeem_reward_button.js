@@ -21,7 +21,6 @@ export class RedeemRewardButton extends Component {
         const partner = this.pos.get_order().get_partner();
         const partner_id = partner ? partner.id : false;
 
-        // call backend
         const result = await this.orm.call(
             "pos.session",
             "get_reward_products",
@@ -29,8 +28,6 @@ export class RedeemRewardButton extends Component {
             { partner_id }
         );
 
-        // Normalize backend result that is expected to be an object:
-        // { product_rewards: [...], discount_rewards: [...] }
         const productRewards = Array.isArray(result?.product_rewards)
             ? result.product_rewards
             : Object.values(result?.product_rewards || {});
@@ -39,7 +36,6 @@ export class RedeemRewardButton extends Component {
             ? result.discount_rewards
             : Object.values(result?.discount_rewards || {});
 
-        // If both empty -> show message
         if ((!productRewards || productRewards.length === 0) &&
             (!discountRewards || discountRewards.length === 0)) {
             await this.popup.add(ConfirmPopup, {
@@ -50,7 +46,6 @@ export class RedeemRewardButton extends Component {
             return;
         }
 
-        // Pass both lists to single popup which will show categories first
         await this.popup.add(RedeemRewardPopupWidget, {
             product_rewards: productRewards,
             discount_rewards: discountRewards,

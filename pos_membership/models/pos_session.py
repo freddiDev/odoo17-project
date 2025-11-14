@@ -56,12 +56,14 @@ class PosSession(models.Model):
                 ('reward_type', '=', 'product'),
             ])
 
+            # do not mutate remaining_points here. show all product rewards that are affordable
             lines = product_rewards.mapped('loyalry_reward_product_ids').sorted(
                 lambda l: l.reedem_points or 0, reverse=True
             )
 
             for line in lines:
-                rp = int(line.reedem_points)
+                rp = int(line.reedem_points or 0)
+                # only show if partner has minimal points for that product
                 if remaining_points < rp:
                     continue
 
@@ -72,6 +74,7 @@ class PosSession(models.Model):
                         "display_name": f"{product.display_name} (Free)",
                         "lst_price": 0.0,
                         "used_points": rp,
+                        "required_points": rp,
                         "image_url": f"/web/image?model=product.product&id={product.id}&field=image_128",
                     })
 
@@ -84,19 +87,25 @@ class PosSession(models.Model):
             ])
 
             if discount_rewards and remaining_points > 0:
-                req = getattr(discount_rewards, 'required_points', 0)
-                max_amt = getattr(discount_rewards, 'discount_max_amount', 0.0)
+                # Note: if multiple discount_rewards found, iterate them (but typical setup has one)
+                for dr in discount_rewards:
+                    req = int(getattr(dr, 'required_points', 0) or 0)
+                    max_amt = float(getattr(dr, 'discount_max_amount', 0.0) or 0.0)
 
-                if req and remaining_points >= req:
-                    val = (remaining_points / req) * max_amt
-
-                    redeem_product = config.redeem_product_id
-                    if redeem_product:
+                    # only allow discount option if at least minimal required points satisfied
+                    if req and remaining_points >= req and config.redeem_product_id:
+                        redeem_product = config.redeem_product_id
+                        # Provide metadata for frontend to compute variable discount based on user input
+                        # default used_points = 0 (frontend will ask user how many points to use)
+                        # lst_price default 0 (frontend sets negative price)
                         result_products["discount_rewards"].append({
                             "id": redeem_product.id,
-                            "display_name": f"{redeem_product.display_name} (Discount Rp {val:,.0f})",
-                            "lst_price": -abs(val),
-                            "used_points": remaining_points,
+                            "display_name": f"{redeem_product.display_name} (Discount)",
+                            "lst_price": 0.0,
+                            "used_points": 0,
+                            "required_points": req,
+                            "discount_max_amount": max_amt,
+                            "max_points": remaining_points,
                             "image_url": f"/web/image?model=product.product&id={redeem_product.id}&field=image_128",
                         })
 

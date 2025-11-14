@@ -5,6 +5,7 @@ import { AbstractAwaitablePopup } from "@point_of_sale/app/popup/abstract_awaita
 import { ConfirmPopup } from "@point_of_sale/app/utils/confirm_popup/confirm_popup";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
+import { RedeemPointsInputPopup } from "@pos_membership/js/redeem_points_input_popup";
 
 export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
     static template = "pos_membership.RedeemRewardPopupWidget";
@@ -14,12 +15,11 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         this.popup = useService("popup");
 
         this.state = {
-            mode: "category",        // category | list
-            selectedCategory: null,  // redeem_points | rewards
+            mode: "category",       
+            selectedCategory: null,
         };
     }
 
-    // ------------- CATEGORY SET -------------
     get categories() {
         return [
             { code: "redeem_points", name: "Redeem Points" },
@@ -27,7 +27,6 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         ];
     }
 
-    // ------------- PRODUCTS -------------
     get products() {
         if (this.state.mode !== "list") return [];
 
@@ -58,7 +57,6 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         return [];
     }
 
-    // ------------- CLICK CATEGORY -------------
     clickCategory(ev) {
         const cat = ev.currentTarget.dataset.cat;
         if (!cat) return;
@@ -66,10 +64,9 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         this.state.selectedCategory = cat;
         this.state.mode = "list";
 
-        this.render();  // <= WAJIB pada popup Odoo 17
+        this.render();
     }
 
-    // ------------- CLICK PRODUCT -------------
     async click_on_rr_product(ev) {
         const product_id = Number(ev.currentTarget.dataset.productId);
         if (!product_id) return;
@@ -111,14 +108,55 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
             return;
         }
 
-        const line = order.add_product(product, {
-            price: selectedReward.lst_price,
-            merge: false,
-        });
+        if (this.state.selectedCategory === "rewards") {
+            const line = order.add_product(product, {
+                price: selectedReward.lst_price,
+                merge: false,
+            });
 
-        line.is_reward_redeem = true;
-        line.pts = selectedReward.used_points || 0;
+            line.is_reward_redeem = true;
+            line.pts = selectedReward.used_points || 0;
 
-        this.props.close({ confirmed: true });
+            this.props.close({ confirmed: true });
+            return;
+        }
+
+        if (this.state.selectedCategory === "redeem_points") {
+            const popupRes = await this.popup.add(RedeemPointsInputPopup, {
+                reward: selectedReward,
+            });
+
+            if (!popupRes || !popupRes.confirmed) {
+                return;
+            }
+
+            const pointsToUse = Number(popupRes.points || 0);
+            if (!pointsToUse || pointsToUse <= 0) {
+                await this.popup.add(ConfirmPopup, {
+                    title: _t("Invalid Points"),
+                    body: _t("Poin yang dimasukkan tidak valid."),
+                    confirmText: _t("OK"),
+                });
+                return;
+            }
+
+            const req = Number(selectedReward.required_points || 0);
+            const max_amt = Number(selectedReward.discount_max_amount || 0);
+            let val = 0;
+            if (req > 0) {
+                val = Math.ceil((pointsToUse / req) * max_amt);
+            }
+
+            const line = order.add_product(product, {
+                price: -Math.abs(val),
+                merge: false,
+            });
+
+            line.is_reward_redeem = true;
+            line.pts = pointsToUse;
+
+            this.props.close({ confirmed: true });
+            return;
+        }
     }
 }
