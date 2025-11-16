@@ -64,6 +64,20 @@
                                 </group>
                             </group>
                         </page>
+                        <page name="point-history" string="Member Points">
+                            <field name="pos_loyalty_point_ids">
+                                <tree string="Loyalty Points" create="false" edit="false" delete="false" default_order="end_date asc">
+                                    <field name="type"/>
+                                    <field name="point"/>
+                                    <field name="member_phone"/>
+                                    <field name="redeemed_point"/>
+                                    <field name="order_id" optional="hide"/>
+                                    <field name="type"/>
+                                    <field name="end_date"/>
+                                    <field name="company_id" optional="hide"  readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

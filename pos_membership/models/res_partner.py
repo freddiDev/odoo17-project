@@ -30,23 +30,24 @@ class ResPartner(models.Model):
             )
             record.member_type_id = mt.id if mt else False
 
+
     def _get_point(self):
         for partner in self:
             total_points = 0
             for loyalty_transaction in partner.pos_loyalty_point_ids:
                 transaction_type = loyalty_transaction.type
-                if loyalty_transaction.state != 'ready' and transaction_type not in ['plus']:
-                    continue
-                if transaction_type in ['plus']:
-                    if loyalty_transaction.state != 'ready':
-                        total_points += abs(loyalty_transaction.redeemed_point)
-                    else:
+                state = loyalty_transaction.state
+
+                if transaction_type == 'plus':
+                    if state == 'ready':
                         total_points += loyalty_transaction.point
-                elif transaction_type in ['void', 'return']:
-                    total_points += loyalty_transaction.point
+                    else:
+                        total_points -= abs(loyalty_transaction.point)
+
                 elif transaction_type == 'redeem':
-                    total_points += loyalty_transaction.point
+                    total_points -= abs(loyalty_transaction.redeemed_point)
             partner.pos_loyal_point = total_points
+            
 
     @api.model
     def create_from_ui(self, partner):
