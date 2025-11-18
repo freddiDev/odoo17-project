@@ -9,7 +9,11 @@ class PosSession(models.Model):
         result['search_params']['fields'] += [
             'is_membership',
             'member_type',
-            'pos_loyal_point'
+            'pos_loyal_point',
+            'member_type_id',
+            'pos_loyalty_rule_id',
+            'pos_minimum_amount',
+            'pos_reward_point_amount',
         ]
         return result
 
@@ -18,23 +22,26 @@ class PosSession(models.Model):
         redeem_product_id = self.config_id.redeem_product_id.id
         product_ids_set = {product['id'] for product in result}
 
-        if self.config_id.redeem_product_id and (
-                redeem_product_id) not in product_ids_set:
-            product_model = self.env['product.product'].with_context(
-                **params['context'])
-            product = product_model.search_read([(
-                'id', '=', redeem_product_id
-            )], fields=params['search_params']['fields'])
+        if self.config_id.redeem_product_id and redeem_product_id not in product_ids_set:
+            product_model = self.env['product.product'].with_context(**params['context'])
+            product = product_model.search_read(
+                [('id', '=', redeem_product_id)],
+                fields=params['search_params']['fields']
+            )
             self._process_pos_ui_product_product(product)
             result.extend(product)
         return result
 
     @api.model
     def get_reward_products(self, pos_session=False, partner_id=False):
-        partner = self.env['res.partner'].browse(partner_id) if partner_id else None
-        session = self.env['pos.session'].browse(pos_session) if pos_session else self.env['pos.session'].browse(self.env.context.get('pos_session_id'))
-        config = session.config_id or self.env['pos.config'].search([], limit=1)
-        result_products = []
+        partner = self.env['res.partner'].browse(partner_id)
+        session = self.env['pos.session'].browse(pos_session)
+        config = session.config_id
+        result_products = {
+            "product_rewards": [],
+            "discount_rewards": [],
+        }
+
         if not partner:
             return result_products
 
@@ -46,55 +53,50 @@ class PosSession(models.Model):
 
         for program in programs:
             product_rewards = self.env['loyalty.reward'].search([
-                ('member_type_ids', 'in', partner.member_type_id.id if partner and partner.member_type_id else []),
+                ('member_type_ids', 'in', partner.member_type_id.id),
                 ('program_id', '=', program.id),
                 ('reward_type', '=', 'product'),
-                ('program_id.active', '=', True),
             ])
-            all_lines = product_rewards.mapped('loyalry_reward_product_ids')
-            reward_lines = all_lines.sorted(lambda l: l.reedem_points or 0, reverse=True)
-            for reward_line in reward_lines:
-                if remaining_points <= 0:
-                    break
-                rp = int(reward_line.reedem_points or 0)
+            lines = product_rewards.mapped('loyalry_reward_product_ids').sorted(
+                lambda l: l.reedem_points or 0, reverse=True
+            )
+            for line in lines:
+                rp = int(line.reedem_points or 0)
                 if remaining_points < rp:
                     continue
-                product = reward_line.product_id
+                product = line.product_id
                 if product:
-                    result_products.append({
-                        'id': product.id,
-                        'display_name': f"{product.display_name} (Free)",
-                        'lst_price': 0.0,
-                        'used_points': rp,
-                        'image_url': f"/web/image?model=product.product&id={product.id}&field=image_128",
+                    result_products["product_rewards"].append({
+                        "id": product.id,
+                        "min_order_amount": product_rewards.discount_max_amount,
+                        "display_name": f"{product.display_name} (Free)",
+                        "lst_price": 0.0,
+                        "used_points": rp,
+                        "required_points": rp,
+                        "image_url": f"/web/image?model=product.product&id={product.id}&field=image_128",
                     })
-                    remaining_points -= rp
 
-        for program in programs:
             discount_rewards = self.env['loyalty.reward'].search([
-                ('member_type_ids', 'in', partner.member_type_id.id if partner and partner.member_type_id else []),
+                ('member_type_ids', 'in', partner.member_type_id.id),
                 ('program_id', '=', program.id),
                 ('reward_type', '=', 'discount'),
-                ('program_id.active', '=', True),
             ])
             if discount_rewards and remaining_points > 0:
-                required_points = getattr(discount_rewards, 'required_points', 0)
-                discount_max_amount = getattr(discount_rewards, 'discount_max_amount', 0.0)
-                if required_points and remaining_points >= required_points:
-                    discount_value = (remaining_points / required_points) * discount_max_amount
-                    redeem_product = config.redeem_product_id
-                    if redeem_product:
-                        result_products.append({
-                            'id': redeem_product.id,
-                            'display_name': f"{redeem_product.display_name} (Discount Rp {discount_value:,.0f})",
-                            'lst_price': -abs(discount_value),
-                            'used_points': remaining_points,
-                            'image_url': f"/web/image?model=product.product&id={redeem_product.id}&field=image_128",
+                for dr in discount_rewards:
+                    req = int(getattr(dr, 'required_points', 0) or 0)
+                    max_amt = float(getattr(dr, 'discount_max_amount', 0.0) or 0.0)
+                    if req and remaining_points >= req and config.redeem_product_id:
+                        redeem_product = config.redeem_product_id
+                        result_products["discount_rewards"].append({
+                            "id": redeem_product.id,
+                            "display_name": f"{redeem_product.display_name} (Discount)",
+                            "lst_price": 0.0,
+                            "used_points": remaining_points,
+                            "required_points": req,
+                            "discount_max_amount": max_amt,
+                            "max_points": remaining_points,
+                            "image_url": f"/web/image?model=product.product&id={redeem_product.id}&field=image_128",
                         })
-                    remaining_points = 0
 
         return result_products
-
-
-
 

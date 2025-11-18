@@ -66,6 +66,23 @@ class PosOrder(models.Model):
         self._create_loyalty_redeem()
         return res
 
+    @api.model
+    def get_loyalty_rules_for_pos(self):
+        rules = self.env['loyalty.rule'].search([
+            ('program_id.pos_loyalty_type', '=', 'point'),
+            ('program_id.active', '=', True)
+        ])
+        result = []
+        for r in rules:
+            result.append({
+                'id': r.id,
+                'program_id': r.program_id.id,
+                'member_type_ids': r.member_type_ids.ids,
+                'minimum_amount': r.minimum_amount,
+                'reward_point_amount': r.reward_point_amount,
+            })
+        return result
+
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 

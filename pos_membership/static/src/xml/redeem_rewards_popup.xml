@@ -4,67 +4,72 @@
     <t t-name="pos_membership.RedeemRewardPopupWidget">
         <div class="popup popup-selection shadow-sm rounded-2 overflow-hidden">
 
-            <!-- Header -->
             <div class="modal-header bg-primary text-white py-2">
                 <h5 class="modal-title mx-auto fw-bold mb-0">
                     <i class="fa fa-gift me-2"></i> Redeem &amp; Reward
                 </h5>
             </div>
-
-            <!-- Body -->
             <div class="modal-body p-0 bg-light">
-                <div class="product-list-container overflow-y-auto" style="max-height: 450px;">
-                    <div class="product-list d-grid gap-2 p-2"
-                         style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));">
+                <div t-if="state.mode == 'category'" class="p-3 d-grid gap-3"
+                     style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
 
-                        <article
-                            class="product border bg-white shadow-xs cursor-pointer h-100 transition-all position-relative"
-                            t-foreach="products || []"
-                            t-as="item"
-                            t-key="item.id"
-                            t-att-data-product-id="item.id"
-                            t-on-click="click_on_rr_product"
-                        >
+                    <div t-foreach="categories" t-as="cat" t-key="cat.code"
+                         class="btn btn-outline-primary text-center py-4 fw-bold fs-6"
+                         t-att-data-cat="cat.code"
+                         t-on-click="clickCategory">
+                        <t t-esc="cat.name"/>
+                    </div>
+                </div>
 
-                            <!-- Product Image -->
+                <div t-if="state.mode == 'list'" class="product-list-container overflow-y-auto"
+                     style="max-height: 450px;">
+                    <div class="product-list p-2" t-if="products.length == 0"
+                        style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));">
+                        <div class="text-center text-muted fw-semibold py-5">
+                            <i class="fa fa-frown-o fa-2x mb-3"></i>
+                            <div>Total order tidak mencukupi untuk redeem item free.</div>
+                        </div>
+                    </div>
+
+                    <div class="product-list d-grid gap-2 p-2" t-if="products.length != 0"
+                        style="grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));">
+                        <article t-foreach="products" t-as="item" t-key="item.id"
+                                class="product border bg-white shadow-xs cursor-pointer h-100 position-relative"
+                                t-att-data-product-id="item.id"
+                                t-on-click="click_on_rr_product">
+
                             <div class="w-100 position-relative" style="height: 100px;">
-                                <img
-                                    class="w-100 h-100 object-fit-cover"
-                                    t-att-src="item.rr_image_url"
-                                    alt="Product image"
-                                />
+                                <img class="w-100 h-100 object-fit-cover"
+                                    t-att-src="item.rr_image_url"/>
                                 <div class="position-absolute top-0 end-0 m-1 px-1 py-0 bg-primary text-white rounded-pill fw-bold small" style="font-size: 0.65rem;">
-                                    <i class="fa fa-star me-1"></i><t t-esc="item.used_points"/> pts
+                                    <i class="fa fa-star me-1"></i>
+                                    <t t-esc="item.used_points"/> pts
                                 </div>
                             </div>
 
-                            <!-- Product Info -->
-                            <div class="px-1 py-2 d-flex flex-column justify-content-between">
-                                <div class="fw-semibold text-dark lh-sm" 
-                                     style="font-size: 0.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            <div class="px-1 py-2">
+                                <div class="fw-semibold text-dark" style="font-size: .8rem;">
                                     <t t-esc="item.display_name"/>
                                 </div>
 
-                                <span
-                                    t-if="item.lst_price == 0.0"
-                                    class="text-success fw-bold small mt-1"
-                                    style="font-size: 0.7rem;"
-                                >
-                                    <i class="fa fa-gift me-1"></i> FREE
+                                <span t-if="item.lst_price == 0.0"
+                                    class="text-success fw-bold small mt-1">
+                                    <i class="fa fa-gift me-1"></i> Free/Discount
                                 </span>
                             </div>
                         </article>
-
                     </div>
                 </div>
+
             </div>
 
-            <!-- Footer -->
             <div class="modal-footer justify-content-center bg-white border-top py-2">
-                <button class="btn btn-secondary btn-sm px-3 py-1 rounded-pill" t-on-click="cancel">
+                <button class="btn btn-secondary btn-sm px-3 py-1 rounded-pill"
+                        t-on-click="cancel">
                     <i class="fa fa-times me-1"></i> Close
                 </button>
             </div>
+
         </div>
     </t>
 

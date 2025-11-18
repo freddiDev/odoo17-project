@@ -5,6 +5,7 @@ import { AbstractAwaitablePopup } from "@point_of_sale/app/popup/abstract_awaita
 import { ConfirmPopup } from "@point_of_sale/app/utils/confirm_popup/confirm_popup";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
+import { RedeemPointsInputPopup } from "@pos_membership/js/redeem_points_input_popup";
 
 export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
     static template = "pos_membership.RedeemRewardPopupWidget";
@@ -12,70 +13,153 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
     setup() {
         this.pos = usePos();
         this.popup = useService("popup");
+
+        this.state = {
+            mode: "category",       
+            selectedCategory: null,
+        };
+    }
+
+    get categories() {
+        return [
+            { code: "redeem_points", name: "Redeem Points" },
+            { code: "rewards", name: "Rewards" },
+        ];
     }
 
     get products() {
-        const products = [];
-        for (const prd of this.props.products || []) {
-            prd.rr_image_url = `/web/image?model=product.product&field=image_128&id=${prd.id}&write_date=${prd.write_date || ""}&unique=1`;
-            products.push(prd);
+        if (this.state.mode !== "list") return [];
+
+        const normalize = (value) => {
+            if (Array.isArray(value)) return value;
+            if (value && typeof value === "object") return Object.values(value);
+            return [];
+        };
+
+        if (this.state.selectedCategory === "rewards") {
+            const arr = normalize(this.props.product_rewards);
+            console.log("Rewards products:", arr);
+            arr.forEach((p) => {
+                p.rr_image_url =
+                    `/web/image?model=product.product&field=image_128&id=${p.id}`;
+            });
+            return arr;
         }
-        return products;
+
+        if (this.state.selectedCategory === "redeem_points") {
+            const arr = normalize(this.props.discount_rewards);
+            arr.forEach((p) => {
+                p.rr_image_url =
+                    `/web/image?model=product.product&field=image_128&id=${p.id}`;
+            });
+            return arr;
+        }
+
+        return [];
     }
 
-    async click_on_rr_product(event) {
-        const product_id = parseInt(event.currentTarget.dataset.productId, 10);
-        const selectedReward = (this.props.products || []).find((p) => Number(p.id) === product_id);
-        const product = this.pos.db.get_product_by_id(product_id);
-        if (!product || !selectedReward) return;
+    clickCategory(ev) {
+        const cat = ev.currentTarget.dataset.cat;
+        console.log("Selected category:", cat);
+        if (!cat) return;
 
+        this.state.selectedCategory = cat;
+        this.state.mode = "list";
+
+        this.render();
+    }
+
+    async click_on_rr_product(ev) {
+        const product_id = Number(ev.currentTarget.dataset.productId);
+        if (!product_id) return;
+
+        const normalize = (val) =>
+            Array.isArray(val) ? val : Object.values(val || {});
+
+        const list =
+            this.state.selectedCategory === "rewards"
+                ? normalize(this.props.product_rewards)
+                : normalize(this.props.discount_rewards);
+
+        const selectedReward = list.find((p) => Number(p.id) === product_id);
+        if (!selectedReward) return;
+
+        const product = this.pos.db.get_product_by_id(product_id);
         const order = this.pos.get_order();
 
-        const already = order.get_orderlines().some((line) => {
+        const exists = order.get_orderlines().some((line) => {
             try {
-                return Number(line.get_product().id) === Number(product.id) && line.is_reward_redeem === true;
-            } catch (e) {
+                return (
+                    Number(line.get_product().id) === Number(product.id) &&
+                    line.is_reward_redeem
+                );
+            } catch {
                 return false;
             }
         });
-
-        if (already) {
+        console.log("Check existing reward line:", exists, selectedReward);
+        if (exists) {
             await this.popup.add(ConfirmPopup, {
                 title: _t("Duplicate Reward"),
                 body: _t(
-                    `Product "${product.display_name}" sudah diredeem.\nHapus dari cart terlebih dahulu jika ingin menambah ulang.`
+                    `Product "${product.display_name}" sudah diredeem.\n` +
+                        `Hapus dari cart terlebih dahulu jika ingin menambah ulang.`
                 ),
                 confirmText: _t("OK"),
             });
             return;
         }
+        console.log("Selected reward product:", this.state.selectedCategory);
+        if (this.state.selectedCategory === "rewards") {
+            const line = order.add_product(product, {
+                price: selectedReward.lst_price,
+                merge: false,
+            });
 
-        const line = order.add_product(product, {
-            price: selectedReward.lst_price,
-            merge: false,
-        });
+            line.is_reward_redeem = true;
+            line.pts = selectedReward.used_points || 0;
 
-        // set properti di order line yang sebenarnya
-        let targetLine = line;
-        try {
-            const lines = order.get_orderlines();
-            for (let i = lines.length - 1; i >= 0; i--) {
-                const l = lines[i];
-                const pid = Number(l.get_product().id);
-                const lprice = Number(typeof l.get_unit_price === 'function' ? l.get_unit_price() : (l.price ?? l.get_price?.() ?? 0));
-                const selPrice = Number(selectedReward.lst_price || selectedReward.price || 0);
-                if (pid === Number(product.id) && Math.abs(lprice - selPrice) < 0.0001 && !l.is_reward_redeem) {
-                    targetLine = l;
-                    break;
-                }
-            }
-        } catch (err) {
-            targetLine = line;
+            this.props.close({ confirmed: true });
+            return;
         }
 
-        targetLine.is_reward_redeem = true;
-        targetLine.pts = selectedReward.used_points || 0;
+        if (this.state.selectedCategory === "redeem_points") {
+            const popupRes = await this.popup.add(RedeemPointsInputPopup, {
+                reward: selectedReward,
+            });
 
-        this.props.close({ confirmed: true });
+            if (!popupRes || !popupRes.confirmed) {
+                return;
+            }
+
+            const pointsToUse = Number(popupRes.points || 0);
+            console.log("Points to use:====", pointsToUse);
+            if (!pointsToUse || pointsToUse <= 0) {
+                await this.popup.add(ConfirmPopup, {
+                    title: _t("Invalid Points"),
+                    body: _t("Poin yang dimasukkan tidak valid."),
+                    confirmText: _t("OK"),
+                });
+                return;
+            }
+
+            const req = Number(selectedReward.required_points || 0);
+            const max_amt = Number(selectedReward.discount_max_amount || 0);
+            let val = 0;
+            if (req > 0) {
+                val = Math.ceil((pointsToUse / req) * max_amt);
+            }
+
+            const line = order.add_product(product, {
+                price: -Math.abs(val),
+                merge: false,
+            });
+
+            line.is_reward_redeem = true;
+            line.pts = pointsToUse;
+
+            this.props.close({ confirmed: true });
+            return;
+        }
     }
 }

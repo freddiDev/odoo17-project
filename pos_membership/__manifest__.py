@@ -35,7 +35,12 @@
             'pos_membership/static/src/xml/redeem_rewards_popup.xml',
             'pos_membership/static/src/xml/redeem_and_reward_button.xml',
             'pos_membership/static/src/xml/hide_reward_button.xml',
-            'pos_membership/static/src/js/redeem_order_line.js'
+            'pos_membership/static/src/js/redeem_order_line.js',
+            'pos_membership/static/src/js/redeem_points_input_popup.js',
+            'pos_membership/static/src/xml/redeem_points_input_popup.xml',
+            'pos_membership/static/src/js/pos_order_patch.js',
+            'pos_membership/static/src/js/pos_order_widget_patch.js',
+            'pos_membership/static/src/xml/pos_membership_templates.xml',
            
         ],
     },

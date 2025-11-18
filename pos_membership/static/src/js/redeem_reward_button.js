@@ -18,37 +18,48 @@ export class RedeemRewardButton extends Component {
     }
 
     async onClick() {
-        const partner = this.pos.get_order().get_partner();
+        const order = this.pos.get_order();
+        var totalOrder = order.get_total_with_tax();
+        const partner = order.get_partner();
         const partner_id = partner ? partner.id : false;
-        const products = await this.orm.call(
+
+        const result = await this.orm.call(
             "pos.session",
             "get_reward_products",
             [this.pos.pos_session.id],
             { partner_id }
         );
-        if (!products.length) {
+        var minAmount = result?.product_rewards?.[0]?.min_order_amount || 0;
+        
+        var productRewards = Array.isArray(result?.product_rewards)
+            ? result.product_rewards
+            : Object.values(result?.product_rewards || {});
+        
+        if (totalOrder < minAmount) { productRewards = []; }
+        
+        const discountRewards = Array.isArray(result?.discount_rewards)
+            ? result.discount_rewards
+            : Object.values(result?.discount_rewards || {});
+
+        if ((!productRewards || productRewards.length === 0) &&
+            (!discountRewards || discountRewards.length === 0)) {
             await this.popup.add(ConfirmPopup, {
-                title: _t("No Points and No Reward Products"),
-                body: _t(
-                    "There are no reward products available for redemption."
-                ),
+                title: _t("No Rewards Available"),
+                body: _t("Tidak ada reward maupun redeem points."),
                 confirmText: _t("OK"),
             });
             return;
         }
 
-        for (const prd of products) {
-            prd.rr_image_url = `${window.location.origin}${prd.image_url}`;
-        }
-
-        await this.popup.add(RedeemRewardPopupWidget, { products });
+        await this.popup.add(RedeemRewardPopupWidget, {
+            product_rewards: productRewards,
+            discount_rewards: discountRewards,
+        });
     }
 }
 
 ProductScreen.addControlButton({
     component: RedeemRewardButton,
     position: ["before", "SetFiscalPositionButton"],
-    condition: function () {
-        return true;
-    },
+    condition: () => true,
 });

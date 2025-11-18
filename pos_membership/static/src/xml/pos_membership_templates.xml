@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="pos_membership.OrderWidget"
+       t-inherit="point_of_sale.OrderWidget"
+       t-inherit-mode="extension"
+       owl="1">
+
+        <xpath expr="//div[contains(@class,'order-summary')]" position="inside">
+
+            <div class="line">
+                <div class="subentry fs-6 text-muted d-flex align-items-center">
+                    <i class="fa fa-star me-1 text-warning"></i>
+                    Points:
+                    <span class="value fw-bold text-success ms-1">
+                        <t t-esc="EstimatedPoint"/>
+                    </span>
+                </div>
+            </div>
+
+        </xpath>
+
+    </t>
+
+</templates>
