@@ -141,10 +141,8 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
             }
 
             if (existingLine) {
-                existingLine.set_quantity(existingLine.get_quantity() + 1);
                 existingLine.price = Number(existingLine.price) - Math.abs(val);
-                existingLine.pts =
-                    Number(existingLine.pts || 0) + pointsToUse;
+                existingLine.pts = Number(existingLine.pts || 0) + pointsToUse;
                 this.props.close({ confirmed: true });
                 return;
             }
