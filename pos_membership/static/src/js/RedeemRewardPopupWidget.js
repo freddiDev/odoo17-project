@@ -13,7 +13,6 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
     setup() {
         this.pos = usePos();
         this.popup = useService("popup");
-
         this.state = {
             mode: "category",
             selectedCategory: null,
@@ -48,7 +47,6 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         if (this.state.selectedCategory === "redeem_points") {
             const arr = normalize(this.props.discount_rewards);
             const availablePoints = Number(this.props.available_points || 0);
-
             arr.forEach((p) => {
                 p.rr_image_url = `/web/image?model=product.product&field=image_128&id=${p.id}`;
                 p.max_points = availablePoints;
@@ -62,7 +60,6 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
     clickCategory(ev) {
         const cat = ev.currentTarget.dataset.cat;
         if (!cat) return;
-
         this.state.selectedCategory = cat;
         this.state.mode = "list";
         this.render();
@@ -72,8 +69,7 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         const product_id = Number(ev.currentTarget.dataset.productId);
         if (!product_id) return;
 
-        const normalize = (val) =>
-            Array.isArray(val) ? val : Object.values(val || {});
+        const normalize = (val) => (Array.isArray(val) ? val : Object.values(val || {}));
 
         const list =
             this.state.selectedCategory === "rewards"
@@ -86,7 +82,7 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         const product = this.pos.db.get_product_by_id(product_id);
         const order = this.pos.get_order();
 
-        const exists = order.get_orderlines().some((line) => {
+        const existingLine = order.get_orderlines().find((line) => {
             try {
                 return (
                     Number(line.get_product().id) === Number(product.id) &&
@@ -98,26 +94,23 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         });
 
         if (this.state.selectedCategory === "rewards") {
-            if (exists) {
-                await this.popup.add(ConfirmPopup, {
-                    title: _t("Duplicate Reward"),
-                    body: _t(
-                        `Product "${product.display_name}" sudah diredeem.\nHapus dari cart terlebih dahulu jika ingin menambah ulang.`
-                    ),
-                    confirmText: _t("OK"),
-                });
+            if (existingLine) {
+                existingLine.set_quantity(existingLine.get_quantity() + 1);
+                existingLine.price = 0;
+                existingLine.pts =
+                    Number(existingLine.pts || 0) +
+                    Number(selectedReward.used_points || 0);
+                this.props.close({ confirmed: true });
                 return;
             }
 
             const line = await order.add_product(product, {
-                price: selectedReward.lst_price,
+                price: 0,
                 merge: false,
             });
 
             line.is_reward_redeem = true;
             line.pts = selectedReward.used_points || 0;
-            console.log(line.is_reward_redeem, 'line.is_reward_redeem---product----')
-            console.log(line.pts, 'line.pts---products-')
             this.props.close({ confirmed: true });
             return;
         }
@@ -127,12 +120,9 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
                 reward: selectedReward,
             });
 
-            if (!popupRes || !popupRes.confirmed) {
-                return;
-            }
+            if (!popupRes || !popupRes.confirmed) return;
 
             const pointsToUse = Number(popupRes.points || 0);
-
             if (!pointsToUse || pointsToUse <= 0) {
                 await this.popup.add(ConfirmPopup, {
                     title: _t("Invalid Points"),
@@ -148,6 +138,15 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
 
             if (req > 0) {
                 val = Math.ceil((pointsToUse / req) * max_amt);
+            }
+
+            if (existingLine) {
+                existingLine.set_quantity(existingLine.get_quantity() + 1);
+                existingLine.price = Number(existingLine.price) - Math.abs(val);
+                existingLine.pts =
+                    Number(existingLine.pts || 0) + pointsToUse;
+                this.props.close({ confirmed: true });
+                return;
             }
 
             const line = await order.add_product(product, {
