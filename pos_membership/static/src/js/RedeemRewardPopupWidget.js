@@ -15,15 +15,16 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
         this.popup = useService("popup");
 
         this.state = {
-            mode: "category",       
+            mode: "category",
             selectedCategory: null,
         };
     }
 
     get categories() {
+        const availablePoints = Number(this.props.available_points || 0);
         return [
-            { code: "redeem_points", name: "Redeem Points" },
-            { code: "rewards", name: "Rewards" },
+            { code: "redeem_points", name: `Redeem Points (${availablePoints} available)` },
+            { code: "rewards", name: `Rewards (${availablePoints} available)` },
         ];
     }
 
@@ -38,19 +39,19 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
 
         if (this.state.selectedCategory === "rewards") {
             const arr = normalize(this.props.product_rewards);
-            console.log("Rewards products:", arr);
             arr.forEach((p) => {
-                p.rr_image_url =
-                    `/web/image?model=product.product&field=image_128&id=${p.id}`;
+                p.rr_image_url = `/web/image?model=product.product&field=image_128&id=${p.id}`;
             });
             return arr;
         }
 
         if (this.state.selectedCategory === "redeem_points") {
             const arr = normalize(this.props.discount_rewards);
+            const availablePoints = Number(this.props.available_points || 0);
+
             arr.forEach((p) => {
-                p.rr_image_url =
-                    `/web/image?model=product.product&field=image_128&id=${p.id}`;
+                p.rr_image_url = `/web/image?model=product.product&field=image_128&id=${p.id}`;
+                p.max_points = availablePoints;
             });
             return arr;
         }
@@ -60,12 +61,10 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
 
     clickCategory(ev) {
         const cat = ev.currentTarget.dataset.cat;
-        console.log("Selected category:", cat);
         if (!cat) return;
 
         this.state.selectedCategory = cat;
         this.state.mode = "list";
-
         this.render();
     }
 
@@ -91,34 +90,34 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
             try {
                 return (
                     Number(line.get_product().id) === Number(product.id) &&
-                    line.is_reward_redeem
+                    (line.is_reward_redeem || line.isRewardLine?.())
                 );
             } catch {
                 return false;
             }
         });
-        console.log("Check existing reward line:", exists, selectedReward);
-        if (exists) {
-            await this.popup.add(ConfirmPopup, {
-                title: _t("Duplicate Reward"),
-                body: _t(
-                    `Product "${product.display_name}" sudah diredeem.\n` +
-                        `Hapus dari cart terlebih dahulu jika ingin menambah ulang.`
-                ),
-                confirmText: _t("OK"),
-            });
-            return;
-        }
-        console.log("Selected reward product:", this.state.selectedCategory);
+
         if (this.state.selectedCategory === "rewards") {
-            const line = order.add_product(product, {
+            if (exists) {
+                await this.popup.add(ConfirmPopup, {
+                    title: _t("Duplicate Reward"),
+                    body: _t(
+                        `Product "${product.display_name}" sudah diredeem.\nHapus dari cart terlebih dahulu jika ingin menambah ulang.`
+                    ),
+                    confirmText: _t("OK"),
+                });
+                return;
+            }
+
+            const line = await order.add_product(product, {
                 price: selectedReward.lst_price,
                 merge: false,
             });
 
             line.is_reward_redeem = true;
             line.pts = selectedReward.used_points || 0;
-
+            console.log(line.is_reward_redeem, 'line.is_reward_redeem---product----')
+            console.log(line.pts, 'line.pts---products-')
             this.props.close({ confirmed: true });
             return;
         }
@@ -133,7 +132,7 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
             }
 
             const pointsToUse = Number(popupRes.points || 0);
-            console.log("Points to use:====", pointsToUse);
+
             if (!pointsToUse || pointsToUse <= 0) {
                 await this.popup.add(ConfirmPopup, {
                     title: _t("Invalid Points"),
@@ -146,18 +145,18 @@ export class RedeemRewardPopupWidget extends AbstractAwaitablePopup {
             const req = Number(selectedReward.required_points || 0);
             const max_amt = Number(selectedReward.discount_max_amount || 0);
             let val = 0;
+
             if (req > 0) {
                 val = Math.ceil((pointsToUse / req) * max_amt);
             }
 
-            const line = order.add_product(product, {
+            const line = await order.add_product(product, {
                 price: -Math.abs(val),
                 merge: false,
             });
 
             line.is_reward_redeem = true;
             line.pts = pointsToUse;
-
             this.props.close({ confirmed: true });
             return;
         }

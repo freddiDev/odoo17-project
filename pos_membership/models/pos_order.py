@@ -89,4 +89,10 @@ class PosOrderLine(models.Model):
     pts = fields.Float('Used Points')
     is_reward_redeem = fields.Boolean('Reward Redeem')
 
+    def _export_for_ui(self, orderline):
+        res = super(PosOrderLine, self)._export_for_ui(orderline)
+        res['pts'] = orderline.pts
+        res['is_reward_redeem'] = orderline.is_reward_redeem
+        return res
+
 

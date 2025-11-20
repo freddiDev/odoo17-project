@@ -17,35 +17,67 @@ export class RedeemRewardButton extends Component {
         this.orm = useService("orm");
     }
 
+    _getUsedPoints() {
+        const order = this.pos.get_order();
+        if (!order) return 0;
+
+        let usedPoints = 0;
+        console.log(order, 'order---')
+        order.get_orderlines().forEach((line) => {
+            const isReward = line.is_reward_redeem || line.isRewardLine?.() || false;
+            console.log(line,'line---')
+            const points = Number(line.pts) || 0;
+            if (isReward && points > 0) {
+                usedPoints += points;
+            }
+        });
+        return usedPoints;
+    }
+
     async onClick() {
         const order = this.pos.get_order();
-        var totalOrder = order.get_total_with_tax();
+        const totalOrder = order.get_total_with_tax();
         const partner = order.get_partner();
         const partner_id = partner ? partner.id : false;
 
+        if (!partner) {
+            await this.popup.add(ConfirmPopup, {
+                title: _t("No Customer Selected"),
+                body: _t("Pilih pelanggan terlebih dahulu untuk menggunakan fitur Redeem/Reward."),
+                confirmText: _t("OK"),
+            });
+            return;
+        }
+
+        const usedPoints = this._getUsedPoints();
         const result = await this.orm.call(
             "pos.session",
             "get_reward_products",
             [this.pos.pos_session.id],
-            { partner_id }
+            { partner_id, used_points: usedPoints }
         );
-        var minAmount = result?.product_rewards?.[0]?.min_order_amount || 0;
-        
-        var productRewards = Array.isArray(result?.product_rewards)
+
+        const minAmount = result?.product_rewards?.[0]?.min_order_amount || 0;
+
+        let productRewards = Array.isArray(result?.product_rewards)
             ? result.product_rewards
             : Object.values(result?.product_rewards || {});
-        
-        if (totalOrder < minAmount) { productRewards = []; }
-        
+
+        if (totalOrder < minAmount) {
+            productRewards = [];
+        }
+
         const discountRewards = Array.isArray(result?.discount_rewards)
             ? result.discount_rewards
             : Object.values(result?.discount_rewards || {});
 
+        const remaining_points = partner.pos_loyal_point - usedPoints;
         if ((!productRewards || productRewards.length === 0) &&
             (!discountRewards || discountRewards.length === 0)) {
+
             await this.popup.add(ConfirmPopup, {
                 title: _t("No Rewards Available"),
-                body: _t("Tidak ada reward maupun redeem points."),
+                body: _t(`Tidak ada reward maupun redeem points yang tersedia.\nSisa Poin Anda: ${remaining_points}`),
                 confirmText: _t("OK"),
             });
             return;
@@ -54,6 +86,7 @@ export class RedeemRewardButton extends Component {
         await this.popup.add(RedeemRewardPopupWidget, {
             product_rewards: productRewards,
             discount_rewards: discountRewards,
+            available_points: remaining_points,
         });
     }
 }

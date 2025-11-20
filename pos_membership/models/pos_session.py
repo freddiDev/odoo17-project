@@ -1,6 +1,5 @@
 from odoo import api, fields, models, _
 
-
 class PosSession(models.Model):
     _inherit = 'pos.session'
 
@@ -33,7 +32,7 @@ class PosSession(models.Model):
         return result
 
     @api.model
-    def get_reward_products(self, pos_session=False, partner_id=False):
+    def get_reward_products(self, pos_session=False, partner_id=False, used_points=0):
         partner = self.env['res.partner'].browse(partner_id)
         session = self.env['pos.session'].browse(pos_session)
         config = session.config_id
@@ -49,7 +48,11 @@ class PosSession(models.Model):
             ('pos_loyalty_type', '=', 'reedem'),
             ('active', '=', True),
         ])
-        remaining_points = int(partner.pos_loyal_point or 0)
+        
+        total_points = int(partner.pos_loyal_point or 0)
+        remaining_points = total_points - int(used_points or 0)
+        if remaining_points < 0:
+            remaining_points = 0
 
         for program in programs:
             product_rewards = self.env['loyalty.reward'].search([
@@ -81,22 +84,25 @@ class PosSession(models.Model):
                 ('program_id', '=', program.id),
                 ('reward_type', '=', 'discount'),
             ])
-            if discount_rewards and remaining_points > 0:
+            
+            max_points_for_redeem = remaining_points
+            
+            if discount_rewards and max_points_for_redeem > 0:
                 for dr in discount_rewards:
                     req = int(getattr(dr, 'required_points', 0) or 0)
                     max_amt = float(getattr(dr, 'discount_max_amount', 0.0) or 0.0)
-                    if req and remaining_points >= req and config.redeem_product_id:
+                    
+                    if req and max_points_for_redeem >= req and config.redeem_product_id:
                         redeem_product = config.redeem_product_id
                         result_products["discount_rewards"].append({
                             "id": redeem_product.id,
                             "display_name": f"{redeem_product.display_name} (Discount)",
                             "lst_price": 0.0,
-                            "used_points": remaining_points,
+                            "used_points": total_points,
                             "required_points": req,
                             "discount_max_amount": max_amt,
-                            "max_points": remaining_points,
+                            "max_points": max_points_for_redeem,
                             "image_url": f"/web/image?model=product.product&id={redeem_product.id}&field=image_128",
                         })
 
         return result_products
-
