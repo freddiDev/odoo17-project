@@ -1023,7 +1023,6 @@ models.load_models([{
                 if(receipt.backendOrder){
                     qrcodelink = window.origin + '/pos/fnb/scanQrCode?order_id=' + receipt.backendOrder.id;
                 }
-                // <img t-att-src="'/report/barcode/?type=QR&amp;value='+receipt.name+'&amp;width=80&amp;height=80'" />
                 qrcodelink = window.origin + '/report/barcode/?type="QR"&value=' + receipt.name + '&width=80&height=80';
 
                 let date_order = '';
@@ -1034,19 +1033,6 @@ models.load_models([{
                     date_order = moment(receipt.formatted_validation_date, 'MM/DD/YYYY HH:mm:ss').format('DD MMM YYYY hh:mm A');
                 }
                 let logo_base64 = this.pos.company_logo_base64.split('base64,')[1];
-                if (receipt_template?.branch_id) {
-                    // http://localhost:8074/web/image?model=res.branch&id=1&field=logo
-                    const baseUrl = window.location.origin;
-                    const imageUrl = `${baseUrl}/web/image?model=res.branch&id=${receipt_template.branch_id[0]}&field=logo`;
-                    // let imageUrl = 'http://localhost:8074/web/image?model=res.branch&id=' + receipt_template.branch_id[0] + '&field=logo';
-                    console.log('Processing image URL:', imageUrl);
-                    this.getBase64FromUrl(imageUrl).then(
-                        (base64) => {
-                            logo_base64 = base64;
-                            // console.log('Logo base64:', logo_base64);
-                        }
-                    )
-                }
 
                 var paymentlines = [];
                 var _paymentlines = receipt.paymentlines.models
@@ -1070,7 +1056,6 @@ models.load_models([{
                     barcode_arr = receipt.ean13.split('').map(Number);
                 }
                 
-                // Header
                 datas.push(
                     {
                         "type": "image",
