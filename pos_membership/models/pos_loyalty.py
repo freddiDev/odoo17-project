@@ -15,7 +15,7 @@ class PosLoyaltyPoint(models.Model):
     _order = 'id desc'
     _description = 'Model Management all points plus or redeem of customer'
 
-    partner_id = fields.Many2one('res.partner', 'Member', required=1, index=1)
+    partner_id = fields.Many2one('res.partner', 'Member', required=True, index=1)
     member_point = fields.Float('Member Points',related='partner_id.pos_loyal_point')
     member_phone = fields.Char(string='Member Phone', related='partner_id.phone')
     point = fields.Float('Reward Point')
@@ -28,7 +28,7 @@ class PosLoyaltyPoint(models.Model):
         ('redeem', 'Redeem Point'),
         ('void', 'Void'),
         ('return', 'Refund'),
-    ], string='Type', default='plus', required=1)
+    ], string='Type', default='plus', required=True)
     state = fields.Selection([
         ('ready', 'Ready to use'),
         ('expired', 'Expired')

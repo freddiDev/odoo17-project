@@ -111,8 +111,7 @@ patch(ProductScreen.prototype, {
         }
 
         const total = order.get_total_with_tax?.() || 0;
-        const estimated = Math.ceil(total / minimum_amount) * reward_amount;
-
+        const estimated = Math.floor(total / minimum_amount) * reward_amount;
         order.setEstimatedPoint(estimated);
     },
 });

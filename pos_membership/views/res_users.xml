@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="inherit_view_users_form_mail_batik" model="ir.ui.view">
+        <field name="name">inherit.view.users.form.mail.batik</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="mail.view_users_form_mail"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='signature']" position="after">
+                <field name="pos_pin"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

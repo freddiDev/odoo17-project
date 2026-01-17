@@ -15,9 +15,7 @@ patch(OrderWidget.prototype, {
         const order = this.pos.get_order();
 
         if (!order) return 0;
-
         const v = order.getEstimatedPoint();
-
         return v;
     },
 });

@@ -63,7 +63,7 @@
                                 </page>
                                 <page string="Rewards Redeem Rules" name="rewards" invisible="pos_loyalty_type != 'reedem'">
                                     <group>
-                                        <group groups="base.group_no_one">
+                                        <group>
                                             <field name="reward_ids" colspan="2" mode="kanban" nolabel="1" add-label="Add a reward"
                                             class="o_loyalty_kanban_inline" 
                                             widget="loyalty_one2many" 
@@ -73,7 +73,7 @@
                                 </page>
                                 <page string="Product Redeem Rules" name="product_redeem" invisible="pos_loyalty_type != 'reedem'">
                                     <group>
-                                        <group groups="base.group_no_one">
+                                        <group>
                                             <field name="reward_product_ids" colspan="2" mode="kanban" nolabel="1" add-label="Add a reward"
                                             class="o_loyalty_kanban_inline" 
                                             widget="loyalty_one2many" 

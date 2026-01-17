@@ -52,7 +52,7 @@ class ResPartner(models.Model):
                 ('program_id.active', '=', True),
                 ('member_type_ids', 'in', partner.member_type_id.id),
             ], limit=1)
-            print('======rules===', rule)
+            
             if rule:
                 partner.pos_loyalty_rule_id = rule.id
                 partner.pos_minimum_amount = rule.minimum_amount
@@ -65,8 +65,7 @@ class ResPartner(models.Model):
         
         for partner in self:
             partner.member_type_id = False
-            
-            if partner.is_membership and partner.pos_loyal_point > 0:
+            if partner.is_membership and partner.pos_loyal_point >= 0:
                 matching_types = member_types.filtered(
                     lambda mt: mt.point_from <= partner.pos_loyal_point <= mt.point_to
                 )
@@ -96,5 +95,5 @@ class ResPartner(models.Model):
         partner_rec = self.browse(partner_id)
         if not partner.get('id') and partner_rec.exists():
             partner_rec.is_membership = True
-
+            partner_rec.company_id = self.env.company
         return partner_id

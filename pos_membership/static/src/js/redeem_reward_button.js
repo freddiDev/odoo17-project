@@ -22,10 +22,8 @@ export class RedeemRewardButton extends Component {
         if (!order) return 0;
 
         let usedPoints = 0;
-        console.log(order, 'order---')
         order.get_orderlines().forEach((line) => {
             const isReward = line.is_reward_redeem || line.isRewardLine?.() || false;
-            console.log(line,'line---')
             const points = Number(line.pts) || 0;
             if (isReward && points > 0) {
                 usedPoints += points;
@@ -39,6 +37,15 @@ export class RedeemRewardButton extends Component {
         const totalOrder = order.get_total_with_tax();
         const partner = order.get_partner();
         const partner_id = partner ? partner.id : false;
+
+        if(totalOrder <= 0){
+            await this.popup.add(ConfirmPopup, {
+                title: _t("Invalid Order Total"),
+                body: _t("Total order harus lebih besar dari 0 untuk menggunakan fitur Redeem/Reward."),
+                confirmText: _t("OK"),
+            });
+            return;
+        }
 
         if (!partner) {
             await this.popup.add(ConfirmPopup, {
