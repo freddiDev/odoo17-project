@@ -14,9 +14,22 @@
                             <label for="name"/>
                             <h1>
                                 <field name="name" required="1"/>
+                                <field name="is_promotion_schema" invisible="1"/>
                             </h1>
                         </div>
-                        <group>
+
+                        <group invisible="not is_promotion_schema">
+                            <separator string="Conditions" colspan="2"/>
+                            <field name="minimum_qty"/>
+                            <label for="minimum_amount" invisible="program_type == 'buy_x_get_y'"/>
+                            <div class="d-flex flex-row">
+                                <field name="minimum_amount" class="oe_inline me-1"/>
+                            </div>
+                            <separator string="Among" colspan="2"/>
+                            <field name="product_ids" widget="many2many_tags"/>
+                        </group>
+                        
+                        <group invisible="is_promotion_schema">
                             <group>
                                 <separator string="Conditions" colspan="2"/>
                                 <field name="member_type_ids" widget="many2many_tags" class="form-control"/>

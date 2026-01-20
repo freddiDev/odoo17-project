@@ -3,6 +3,13 @@ from odoo import api, fields, models, _
 class LoyaltyProgram(models.Model):
     _inherit = 'loyalty.program'
 
+    is_promotion_schema = fields.Boolean(default=False)
+    is_reseller = fields.Boolean(default=False)
+    custom_promotion_type = fields.Selection([
+        ('disc', 'Discount'),
+        ('free', 'Free Product'),],
+        default='disc', string='Promotion Type'
+    )
     pos_loyalty_type = fields.Selection([
         ('point', 'Plus Points'),
         ('reedem', 'Reedem'),],
@@ -73,4 +80,5 @@ class LoyaltyRules(models.Model):
     name = fields.Char(string='Rule Name', related='program_id.name', store=True, readonly=False)
     member_type_ids = fields.Many2many('member.type', string='Member Type')
     loyalty_point_mode = fields.Selection(selection=_get_loyalty_point_mode_selection, required=True, default='product', string="Type")
+    is_promotion_schema = fields.Boolean(string='Promotion Schema', related='program_id.is_promotion_schema', store=True, readonly=False)
 

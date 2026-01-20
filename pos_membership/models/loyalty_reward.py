@@ -4,6 +4,7 @@ class LoyaltyReward(models.Model):
     _inherit = 'loyalty.reward'
 
     name = fields.Char(string='Rule Name', related='program_id.name', store=True, readonly=False)
+    is_promotion_schema = fields.Boolean(string='Promotion Schema', related='program_id.is_promotion_schema', store=True, readonly=False)
     member_type_ids = fields.Many2many('member.type', string='Member Type')
     loyalry_reward_product_ids = fields.One2many(
         'loyalty.reward.product',

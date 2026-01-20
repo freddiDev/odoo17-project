@@ -47,6 +47,7 @@ class PosSession(models.Model):
         programs = self.env['loyalty.program'].search([
             ('pos_loyalty_type', '=', 'reedem'),
             ('active', '=', True),
+            ('is_promotion_schema', '=', False),
         ])
         
         total_points = int(partner.pos_loyal_point or 0)
