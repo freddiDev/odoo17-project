@@ -45,7 +45,7 @@
                         <group invisible="is_promotion_schema">
                             <group>
                                 <separator string="Conditions" colspan="2"/>
-                                <field name="member_type_ids" class="form-control" widget="many2many_tags" required="1"/>
+                                <field name="member_type_ids" class="form-control" widget="many2many_tags" required="not is_promotion_schema"/>
                                 <field name="reward_type" readonly="1"/>
                             </group>
                             <group>
