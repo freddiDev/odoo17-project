@@ -17,6 +17,8 @@
                             </h1>
                         </div>
 
+
+
                         <group invisible="not is_promotion_schema">
                             <group string="Reward" name="reward_type_group" invisible="program_type in ('ewallet','gift_card')">
                                 <field name="reward_type" widget="selection" readonly="1" force_save="1"/>
@@ -33,11 +35,13 @@
                             <group string="Among" invisible="reward_type != 'product'">
                                 <field name="reward_product_qty" string="Quantity rewarded"/>
                                 <field name="reward_product_id" required="reward_type == 'product' and not reward_product_ids"/>
-                                <field name="reward_product_tag_id" required="reward_type == 'product' and not reward_product_ids"/>
+                                <!-- <field name="reward_product_tag_id" required="reward_type == 'product' and not reward_product_ids"/> -->
                             </group>
 
                             <group string="Discount" invisible="reward_type != 'discount' or program_type in ('gift_card','ewallet')">
                                 <field name="discount_product_ids" widget="many2many_tags" invisible="discount_applicability != 'specific'"/>
+                                <field name="discount_product_category_id" invisible="discount_applicability != 'specific'"/>
+                                <field name="discount_product_tag_id" invisible="discount_applicability != 'specific'"/>
                             </group>
                         </group>
 
@@ -54,8 +58,11 @@
                                 <field name="discount_max_amount" class="form-control" string="Amount"/>
                             </group>
                         </group>
+                        <group  invisible="not is_promotion_schema">
+                            <field name="description" string="Description on order"/>
+                        </group>
                         <notebook>
-                            <page name="gift_product" string="Gift Prodcuts" invisible="not is_promotion_schema or reward_type != 'product'">
+                            <page name="gift_product" string="Gift Prodcuts" invisible="is_promotion_schema or reward_type != 'product'">
                                 <field name="loyalry_reward_product_ids">
                                     <tree editable="bottom">
                                         <field name="product_id"/>
