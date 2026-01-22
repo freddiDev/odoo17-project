@@ -1,26 +1,19 @@
-//** @odoo-module */
-import { ActionpadWidget } from "@point_of_sale/app/screens/product_screen/action_pad/action_pad";
+/** @odoo-module */
+import { ProductScreen } from "@point_of_sale/app/screens/product_screen/product_screen";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
 import { PromotionPopup } from "@pos_membership/js/promotion_popup";
-import { usePos } from "@point_of_sale/app/store/pos_hook";
 
-
-patch(ActionpadWidget.prototype, {
-
-	setup() {
-        if (super.setup) super.setup();
+patch(ProductScreen.prototype, {
+    setup() {
+        super.setup();
         this.popup = useService("popup");
         this.orm = useService("orm");
-        this.pos = usePos(); 
+        this.env.bus.addEventListener("order-updated", () => this.render());
     },
 
-    get isMembershipActive() {
-        return true;
-    },
-
-    async onClickPromotion() {
-        const order = this.pos.get_order(); 
+    async showPromotionPopup() {
+        const order = this.pos.get_order();
         if (!order) return;
 
         const orderLines = order.orderlines.map(l => ({
@@ -47,7 +40,6 @@ patch(ActionpadWidget.prototype, {
         order.is_have_promotion = false;
         this.env.bus.trigger("order-updated");
         this.env.services.pos.showScreen("PaymentScreen");
-    },
 
-    
+    },
 });

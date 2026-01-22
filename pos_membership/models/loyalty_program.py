@@ -8,7 +8,7 @@ class LoyaltyProgram(models.Model):
     custom_promotion_type = fields.Selection([
         ('disc', 'Discount'),
         ('free', 'Free Product'),],
-        default='disc', string='Promotion Type'
+        default='disc', string='Promotion Type', store=True
     )
     pos_loyalty_type = fields.Selection([
         ('point', 'Plus Points'),
@@ -64,7 +64,52 @@ class LoyaltyProgram(models.Model):
         if any(not program.reward_ids for program in self):
             raise ValidationError(_('A program must have at least one reward.'))
 
-            
+
+    
+    @api.model
+    def get_pos_reward_products(self, order_lines):
+        if not isinstance(order_lines, (list, tuple)):
+            return []
+        total = sum(l.get("price_subtotal", 0) for l in order_lines)
+        product_ids = {
+            l.get("product_id")
+            for l in order_lines
+            if l.get("product_id")
+        }
+
+        programs = self.search([
+            ('active', '=', True),
+            ('is_promotion_schema', '=', True),
+            ('custom_promotion_type', '=', 'free'),
+        ], order='sequence, id')
+        program_ok = False
+        for program in programs:
+            program_ok = True
+
+            for rule in program.rule_ids:
+                if rule.minimum_amount and total < rule.minimum_amount:
+                    program_ok = False
+                    break
+                if rule.product_ids and not product_ids.intersection(rule.product_ids.ids):
+                    program_ok = False
+                    break
+
+            if not program_ok:
+                continue
+
+            rewards = []
+            for reward in program.reward_product_ids:
+                if reward.reward_type == "product" and reward.reward_product_id:
+                    rewards.append({
+                        "product_id": reward.reward_product_id.id,
+                        "product_name": reward.reward_product_id.display_name,
+                    })
+
+            if rewards:
+                return rewards
+
+        return []
+     
 
 
 class LoyaltyRules(models.Model):

@@ -18,5 +18,30 @@
                 </div>
             </button>
         </xpath>
+         <xpath expr="//button[hasclass('pay-order-button')]" position="replace">
+            <t t-if="pos.get_order() and pos.get_order().is_have_promotion">
+                <button class="promotion btn-primary"
+                        t-attf-class="{{getMainButtonClasses()}}"
+                        t-on-click="() => this.onClickPromotion()">
+                    <div class="pay-circle d-flex align-items-center justify-content-center py-2 mb-2">
+                        <i class="fa fa-gift" role="img" aria-label="Promotion" title="Promotion"/>
+                    </div>
+                    <span class="text-white">Promotion</span>
+                </button>
+            </t>
+        <t t-if="!pos.get_order() || !pos.get_order().is_have_promotion">
+                <button class="pay validation pay-order-button btn-primary"
+                        t-attf-class="{{getMainButtonClasses()}}"
+                        t-on-click="props.actionToTrigger ? this.props.actionToTrigger : () => pos.get_order().pay()">
+                    <div class="pay-circle d-flex align-items-center justify-content-center py-2 mb-2">
+                        <i class="oi oi-chevron-right" role="img" aria-label="Pay" title="Pay" />
+                    </div>
+                    <span class="text-white">Payment</span>
+                </button>
+            </t>
+
+    </xpath>
+
+
     </t>
 </templates>
