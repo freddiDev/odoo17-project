@@ -20,34 +20,53 @@ patch(ActionpadWidget.prototype, {
     },
 
     async onClickPromotion() {
-        const order = this.pos.get_order(); 
+        const order = this.pos.get_order();
         if (!order) return;
 
-        const orderLines = order.orderlines.map(l => ({
-            product_id: l.product.id,
-            price_subtotal: l.get_display_price(),
-        }));
+        const lines = order.orderlines
+            .filter(line => !line.extras?.is_promotion_reward)
+            .map(line => ({
+                product_id: line.product.id,
+                price_subtotal: line.get_display_price(),
+            }));
 
         const rewards = await this.orm.call(
             "loyalty.program",
             "get_pos_reward_products",
-            [orderLines]
+            [lines]
         );
 
-        if (!rewards.length) return;
+        if (!rewards || !rewards.length) {
+            return;
+        }
 
-        const { confirmed, payload } = await this.popup.add(PromotionPopup, { rewards });
-        if (!confirmed) return;
+        const { confirmed, payload } = await this.popup.add(PromotionPopup, {
+            rewards,
+        });
+
+        if (!confirmed || !payload?.product_id) {
+            return;
+        }
 
         const product = this.pos.db.get_product_by_id(payload.product_id);
         if (!product) return;
 
-        await order.add_product(product, { price: 0, extras: { is_promotion_reward: true } });
-
+        order._promotionLocked = true;
         order.is_have_promotion = false;
-        this.env.bus.trigger("order-updated");
+
+        await order.add_product(product, {
+            price: 0,
+            extras: {
+                is_promotion_reward: true,
+                is_promotion: true,
+            },
+        });
+
+        await Promise.resolve();
+
         this.env.services.pos.showScreen("PaymentScreen");
     },
+
 
     
 });

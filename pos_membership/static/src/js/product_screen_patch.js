@@ -16,10 +16,12 @@ patch(ProductScreen.prototype, {
         const order = this.pos.get_order();
         if (!order) return;
 
-        const orderLines = order.orderlines.map(l => ({
-            product_id: l.product.id,
-            price_subtotal: l.get_display_price(),
-        }));
+        const orderLines = order.orderlines
+            .filter(l => !l.extras?.is_promotion_reward)
+            .map(l => ({
+                product_id: l.product.id,
+                price_subtotal: l.get_display_price(),
+            }));
 
         const rewards = await this.orm.call(
             "loyalty.program",
@@ -35,11 +37,19 @@ patch(ProductScreen.prototype, {
         const product = this.pos.db.get_product_by_id(payload.product_id);
         if (!product) return;
 
-        await order.add_product(product, { price: 0, extras: { is_promotion_reward: true } });
+        await order.add_product(product, {
+            price: 0,
+            extras: { is_promotion_reward: true },
+        });
 
+        order._promotionApplied = true;
         order.is_have_promotion = false;
-        this.env.bus.trigger("order-updated");
-        this.env.services.pos.showScreen("PaymentScreen");
+        order._promotionRewards = [];
 
+        this.env.bus.trigger("order-updated");
+
+        setTimeout(() => {
+            this.env.services.pos.showScreen("PaymentScreen");
+        }, 0);
     },
 });
