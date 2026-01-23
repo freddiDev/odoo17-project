@@ -99,7 +99,7 @@ class LoyaltyProgram(models.Model):
 
             rewards = []
             for reward in program.reward_product_ids:
-                if reward.reward_type == "product" and reward.reward_product_id:
+                if reward.reward_type == "product" and reward.reward_product_id and reward.reward_product_id.available_in_pos == True:
                     rewards.append({
                         "product_id": reward.reward_product_id.id,
                         "product_name": reward.reward_product_id.display_name,

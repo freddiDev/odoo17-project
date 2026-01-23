@@ -34,8 +34,9 @@
 
                             <group string="Among" invisible="reward_type != 'product'">
                                 <field name="reward_product_qty" string="Quantity rewarded"/>
-                                <field name="reward_product_id" required="reward_type == 'product' and not reward_product_ids"/>
-                                <!-- <field name="reward_product_tag_id" required="reward_type == 'product' and not reward_product_ids"/> -->
+                                <field name="reward_product_id"
+                                       required="reward_type == 'product' and not reward_product_ids"
+                                       domain="[('available_in_pos', '=', True)]"/>
                             </group>
 
                             <group string="Discount" invisible="reward_type != 'discount' or program_type in ('gift_card','ewallet')">
