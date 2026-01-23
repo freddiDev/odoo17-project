@@ -1,4 +1,4 @@
-//** @odoo-module */
+/** @odoo-module */
 import { ActionpadWidget } from "@point_of_sale/app/screens/product_screen/action_pad/action_pad";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
@@ -24,10 +24,10 @@ patch(ActionpadWidget.prototype, {
         if (!order) return;
 
         const lines = order.orderlines
-            .filter(line => !line.extras?.is_promotion_reward)
-            .map(line => ({
-                product_id: line.product.id,
-                price_subtotal: line.get_display_price(),
+            .filter(l => !l.extras?.is_promotion_reward)
+            .map(l => ({
+                product_id: l.product.id,
+                price_subtotal: l.get_display_price(),
             }));
 
         const rewards = await this.orm.call(
@@ -36,17 +36,13 @@ patch(ActionpadWidget.prototype, {
             [lines]
         );
 
-        if (!rewards || !rewards.length) {
-            return;
-        }
+        if (!rewards.length) return;
 
         const { confirmed, payload } = await this.popup.add(PromotionPopup, {
             rewards,
         });
 
-        if (!confirmed || !payload?.product_id) {
-            return;
-        }
+        if (!confirmed) return;
 
         const product = this.pos.db.get_product_by_id(payload.product_id);
         if (!product) return;
@@ -56,13 +52,8 @@ patch(ActionpadWidget.prototype, {
 
         await order.add_product(product, {
             price: 0,
-            extras: {
-                is_promotion_reward: true,
-                is_promotion: true,
-            },
+            extras: { is_promotion_reward: true },
         });
-
-        await Promise.resolve();
 
         this.env.services.pos.showScreen("PaymentScreen");
     },

@@ -41,6 +41,7 @@
             'pos_membership/static/src/js/pos_order_patch.js',
             'pos_membership/static/src/js/pos_order_widget_patch.js',
             'pos_membership/static/src/xml/pos_membership_templates.xml',
+            'pos_membership/static/src/css/promotion_popup.css',
             "pos_membership/static/src/js/order_patch.js",
             "pos_membership/static/src/js/product_screen_patch.js",
             "pos_membership/static/src/js/promotion_popup.js",

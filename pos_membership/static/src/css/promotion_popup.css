@@ -1,0 +1,52 @@
+.promotion-popup {
+    max-width: 520px;
+}
+
+.promotion-header .promotion-icon {
+    background: #eef3ff;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.promotion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.promotion-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    background: #fff;
+}
+
+.promotion-card:hover {
+    border-color: #0d6efd;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    transform: translateY(-2px);
+}
+
+.promotion-card-body {
+    padding: 16px;
+}
+
+.promotion-product-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.promotion-free-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #198754;
+    background: #e9f7ef;
+    border-radius: 20px;
+}
