@@ -1,5 +1,31 @@
-from odoo import api, fields, models
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+from datetime import datetime
+from uuid import uuid4
+import pytz
+
+from odoo import api, fields, models, _, Command
+from odoo.http import request
+from odoo.osv.expression import OR, AND
+from odoo.exceptions import AccessError, ValidationError, UserError
+
+class PosConfig(models.Model):
+    _inherit = 'pos.config'
+
+    def get_limited_partners_loading(self):
+        self.env.cr.execute("""
+            SELECT id
+            FROM res_partner
+            WHERE is_membership = true
+              AND (
+                    company_id = %s
+                    OR company_id IS NULL
+              )
+            ORDER BY name
+            LIMIT %s
+        """, [self.company_id.id, 200])
+        return self.env.cr.fetchall()
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
